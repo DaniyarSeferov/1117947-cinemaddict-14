@@ -5,8 +5,8 @@ import {createFilmsListTemplate} from './films-list';
 const FILMS_CARD_COUNT = 5;
 const FILMS_CARD_EXTRA_COUNT = 2;
 
-export const createFilmsTemplate = () => {
-  const films = new Array(FILMS_CARD_COUNT).fill(null).map(createFilmCardTemplate);
+export const createFilmsTemplate = (data) => {
+  const films = data.slice(0, FILMS_CARD_COUNT).map(createFilmCardTemplate);
   const filmsExtra = films.slice(0, FILMS_CARD_EXTRA_COUNT);
   const filmsList = createFilmsListTemplate(films);
   const topRated = createFilmsListExtraTemplate('Top rated', filmsExtra);
