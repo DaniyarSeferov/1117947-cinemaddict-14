@@ -200,11 +200,7 @@ const generateAge = () => {
   return getRandomArrayItem(ages);
 };
 
-const generateCommentIds = (comments) => {
-  return getRandomArrayItems(Object.keys(comments), FILM_COMMENTS_MIN, comments.length);
-};
-
-export const generateFilm = (comments) => {
+export const generateFilm = () => {
   const title = generateTitle();
 
   return {
@@ -216,7 +212,6 @@ export const generateFilm = (comments) => {
     releaseDate: generateRandomDate(FILM_YEAR_MIN, FILM_YEAR_MAX),
     runtime: generateRuntime(),
     genres: generateGenres(),
-    comments: generateCommentIds(comments),
     director: generateDirector(),
     writers: generateWriters(),
     actors: generateActors(),

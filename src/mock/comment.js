@@ -1,7 +1,9 @@
-import {generateRandomDate, getRandomArrayItem} from '../utils';
+import {generateRandomDate, getRandomArrayItem, getRandomInteger} from '../utils';
 
 const COMMENT_YEAR_MIN = 1990;
 const COMMENT_YEAR_MAX = 2021;
+const COMMENTS_MIN_COUNT = 0;
+const COMMENTS_MAX_COUNT = 5;
 
 const generateEmotion = () => {
   const emotions = [
@@ -44,4 +46,9 @@ export const generateComment = () => {
     author: generateAuthor(),
     text: generateCommentText(),
   };
+};
+
+export const generateComments = () => {
+  const randomIndex = getRandomInteger(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
+  return new Array(randomIndex).fill(null).map(generateComment);
 };

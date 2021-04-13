@@ -1,12 +1,12 @@
 import {createPopupCommentsTemplate} from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils';
 
-export const createPopupTemplate = (data, commentsData) => {
-  const comments = createPopupCommentsTemplate(data.comments, commentsData);
-  const releaseDate = humanizeFilmReleaseDate(data.releaseDate);
-  const runtime = humanizeFilmRuntime(data.runtime);
-  const genresTitle = data.genres.length === 1 ? 'Genre' : 'Genres';
-  const genres = data.genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ');
+export const createPopupTemplate = ({film, comments}) => {
+  const commentsElement = createPopupCommentsTemplate(comments);
+  const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
+  const runtime = humanizeFilmRuntime(film.runtime);
+  const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
+  const genres = film.genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ');
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -16,35 +16,35 @@ export const createPopupTemplate = (data, commentsData) => {
       </div>
       <div class="film-details__info-wrap">
         <div class="film-details__poster">
-          <img class="film-details__poster-img" src="${data.poster}" alt="">
+          <img class="film-details__poster-img" src="${film.poster}" alt="">
 
-          <p class="film-details__age">${data.age}</p>
+          <p class="film-details__age">${film.age}</p>
         </div>
 
         <div class="film-details__info">
           <div class="film-details__info-head">
             <div class="film-details__title-wrap">
-              <h3 class="film-details__title">${data.title}</h3>
-              <p class="film-details__title-original">Original: ${data.originalTitle}</p>
+              <h3 class="film-details__title">${film.title}</h3>
+              <p class="film-details__title-original">Original: ${film.originalTitle}</p>
             </div>
 
             <div class="film-details__rating">
-              <p class="film-details__total-rating">${data.rating}</p>
+              <p class="film-details__total-rating">${film.rating}</p>
             </div>
           </div>
 
           <table class="film-details__table">
             <tr class="film-details__row">
               <td class="film-details__term">Director</td>
-              <td class="film-details__cell">${data.director}</td>
+              <td class="film-details__cell">${film.director}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Writers</td>
-              <td class="film-details__cell">${data.writers.join(', ')}</td>
+              <td class="film-details__cell">${film.writers.join(', ')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Actors</td>
-              <td class="film-details__cell">${data.actors.join(', ')}</td>
+              <td class="film-details__cell">${film.actors.join(', ')}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Release Date</td>
@@ -56,7 +56,7 @@ export const createPopupTemplate = (data, commentsData) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
-              <td class="film-details__cell">${data.country}</td>
+              <td class="film-details__cell">${film.country}</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">${genresTitle}</td>
@@ -67,7 +67,7 @@ export const createPopupTemplate = (data, commentsData) => {
           </table>
 
           <p class="film-details__film-description">
-            ${data.description}
+            ${film.description}
           </p>
         </div>
       </div>
@@ -85,7 +85,7 @@ export const createPopupTemplate = (data, commentsData) => {
     </div>
 
     <div class="film-details__bottom-container">
-      ${comments}
+      ${commentsElement}
     </div>
   </form>
 </section>`;

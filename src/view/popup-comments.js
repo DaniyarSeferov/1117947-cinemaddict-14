@@ -2,11 +2,9 @@ import {createPopupCommentsListTemplate} from './popup-comments-list';
 import {createPopupCommentAddTemplate} from './popup-comment-add';
 import {createPopupCommentTemplate} from './popup-comment';
 
-export const createPopupCommentsTemplate = (data, commentsData) => {
-  const comments = data.map((commentIndex) => {
-    return createPopupCommentTemplate(commentsData[commentIndex]);
-  });
-  const commentsList = createPopupCommentsListTemplate(comments);
+export const createPopupCommentsTemplate = (comments) => {
+  const commentsElement = comments.map(createPopupCommentTemplate);
+  const commentsList = createPopupCommentsListTemplate(commentsElement);
   const addComment = createPopupCommentAddTemplate();
 
   return `<section class="film-details__comments-wrap">
