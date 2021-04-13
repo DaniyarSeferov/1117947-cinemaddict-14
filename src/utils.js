@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import {COMMENT_DAY_AGO} from './const';
 dayjs.extend(relativeTime);
 
 // Функция из интернета по генерации случайного числа из диапазона
@@ -59,5 +60,5 @@ export const humanizeCommentDate = (date) => {
   const now = dayjs();
   date = dayjs(date);
   const dayFromNow = now.diff(date, 'day');
-  return dayFromNow > 2 ? date.format('YYYY/MM/DD HH:mm') : date.fromNow();
+  return dayFromNow > COMMENT_DAY_AGO ? date.format('YYYY/MM/DD HH:mm') : date.fromNow();
 };

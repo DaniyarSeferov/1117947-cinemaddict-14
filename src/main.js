@@ -6,10 +6,10 @@ import {createFilmsTemplate} from './view/films';
 import {createPopupTemplate} from './view/popup';
 import {createStatisticTemplate} from './view/statistic';
 import {generateFilm} from './mock/film';
-import {generateComment} from './mock/comments';
+import {generateComment} from './mock/comment';
 
 const FILMS_COUNT = 20;
-const COMMENTS_COUNT = 10;
+const COMMENTS_COUNT = 5;
 
 const comments = new Array(COMMENTS_COUNT).fill(null).map(generateComment);
 const films = new Array(FILMS_COUNT).fill(null).map(() => {
