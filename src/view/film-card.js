@@ -6,6 +6,7 @@ export const createFilmCardTemplate = (data) => {
   const description = data.description.length > FILM_DESCRIPTION_MAX_LENGTH ?
     `${data.description.slice(0, FILM_DESCRIPTION_MAX_LENGTH - 1)}…` : data.description;
   const runtime = humanizeFilmRuntime(data.runtime);
+  const comment = data.comments.length === 1 ? '1 comment' : `${data.comments.length} comments`;
 
   return `<article class="film-card">
     <h3 class="film-card__title">${data.title}</h3>
@@ -17,7 +18,7 @@ export const createFilmCardTemplate = (data) => {
     </p>
     <img src="${data.poster}" alt="" class="film-card__poster">
     <p class="film-card__description">${description}</p>
-    <a class="film-card__comments">5 comments</a>
+    <a class="film-card__comments">${comment}</a>
     <div class="film-card__controls">
       <button class="film-card__controls-item button film-card__controls-item--add-to-watchlist" type="button">Add to watchlist</button>
       <button class="film-card__controls-item button film-card__controls-item--mark-as-watched" type="button">Mark as watched</button>

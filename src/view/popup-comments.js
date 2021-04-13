@@ -2,10 +2,10 @@ import {createPopupCommentsListTemplate} from './popup-comments-list';
 import {createPopupCommentAddTemplate} from './popup-comment-add';
 import {createPopupCommentTemplate} from './popup-comment';
 
-const POPUP_COMMENTS_COUNT = 4;
-
-export const createPopupCommentsTemplate = () => {
-  const comments = new Array(POPUP_COMMENTS_COUNT).fill(null).map(createPopupCommentTemplate);
+export const createPopupCommentsTemplate = (data, commentsData) => {
+  const comments = data.map((commentIndex) => {
+    return createPopupCommentTemplate(commentsData[commentIndex]);
+  });
   const commentsList = createPopupCommentsListTemplate(comments);
   const addComment = createPopupCommentAddTemplate();
 

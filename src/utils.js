@@ -1,4 +1,6 @@
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
 
 // Функция из интернета по генерации случайного числа из диапазона
 // Источник - https://github.com/you-dont-need/You-Dont-Need-Lodash-Underscore#_random
@@ -51,4 +53,11 @@ export const humanizeFilmRuntime = (num) => {
 
 export const humanizeFilmReleaseDate = (releaseDate) => {
   return dayjs(releaseDate).format('D MMMM YYYY');
+};
+
+export const humanizeCommentDate = (date) => {
+  const now = dayjs();
+  date = dayjs(date);
+  const dayFromNow = now.diff(date, 'day');
+  return dayFromNow > 2 ? date.format('YYYY/MM/DD HH:mm') : date.fromNow();
 };

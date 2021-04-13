@@ -9,7 +9,7 @@ import {generateFilm} from './mock/film';
 import {generateComment} from './mock/comments';
 
 const FILMS_COUNT = 20;
-const COMMENTS_COUNT = 40;
+const COMMENTS_COUNT = 10;
 
 const comments = new Array(COMMENTS_COUNT).fill(null).map(generateComment);
 const films = new Array(FILMS_COUNT).fill(null).map(() => {
@@ -30,5 +30,5 @@ render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
 render(siteMainElement, createSortMenuTemplate(), 'beforeend');
 render(siteMainElement, createFilmsTemplate(films), 'beforeend');
 render(siteFooterStatisticsElement, createFooterStatisticsTemplate(), 'beforeend');
-render(siteBodyElement, createPopupTemplate(), 'beforeend');
+render(siteBodyElement, createPopupTemplate(films[0], comments), 'beforeend');
 render(siteMainElement, createStatisticTemplate(), 'beforeend');
