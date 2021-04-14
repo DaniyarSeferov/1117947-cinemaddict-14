@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import {
-  COMMENT_DAY_AGO,
+  COMMENT_DAY_AGO, FILMS_CARD_EXTRA_COUNT,
   USER_RANK_FAN_MIN,
   USER_RANK_MOVIE_BUFF_MIN,
   USER_RANK_NOVICE_MIN
@@ -103,4 +103,14 @@ export const countUserWatchedFilmsTopGenre = (films) => {
 
   const genresSorted = Object.entries(genres).sort((genreFirst, genreSecond) => genreSecond[1] - genreFirst[1]);
   return genresSorted[0][0];
+};
+
+export const getTopRatedFilms = (films) => {
+  const filmsSorted = films.slice().sort((filmFirst, filmSecond) => filmSecond.film.rating - filmFirst.film.rating);
+  return filmsSorted.slice(0, FILMS_CARD_EXTRA_COUNT);
+};
+
+export const getMostCommentedFilms = (films) => {
+  const filmsSorted = films.slice().sort((filmFirst, filmSecond) => filmSecond.comments.length - filmFirst.comments.length);
+  return filmsSorted.slice(0, FILMS_CARD_EXTRA_COUNT);
 };
