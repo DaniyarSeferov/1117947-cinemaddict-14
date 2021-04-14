@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import {COMMENT_DAY_AGO} from './const';
+import {
+  COMMENT_DAY_AGO,
+  USER_RANK_FAN_MIN,
+  USER_RANK_MOVIE_BUFF_MIN,
+  USER_RANK_NOVICE_MIN
+} from './const';
 dayjs.extend(relativeTime);
 
 // Функция из интернета по генерации случайного числа из диапазона
@@ -61,4 +66,20 @@ export const humanizeCommentDate = (date) => {
   date = dayjs(date);
   const dayFromNow = now.diff(date, 'day');
   return dayFromNow > COMMENT_DAY_AGO ? date.format('YYYY/MM/DD HH:mm') : date.fromNow();
+};
+
+export const getUserRank = (watched) => {
+  let rank = '';
+  if (watched >= USER_RANK_MOVIE_BUFF_MIN) {
+    rank = 'Movie Buff';
+  } else if (watched >= USER_RANK_FAN_MIN) {
+    rank = 'Fan';
+  } else if (watched >= USER_RANK_NOVICE_MIN) {
+    rank = 'Novice';
+  }
+  return rank;
+};
+
+export const countUserWatchedFilms = (films) => {
+  return films.filter((film) => film.statistic.watched).length;
 };

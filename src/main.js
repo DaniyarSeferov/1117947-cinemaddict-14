@@ -7,13 +7,20 @@ import {createPopupTemplate} from './view/popup';
 import {createStatisticTemplate} from './view/statistic';
 import {generateFilm} from './mock/film';
 import {generateComments} from './mock/comment';
+import {generateStatistic} from './mock/statistic';
+import {generateFilter} from './mock/filter';
+import {countUserWatchedFilms, getUserRank} from './utils';
 
 const FILMS_COUNT = 20;
 
 const data = new Array(FILMS_COUNT).fill(null).map(() => ({
   film: generateFilm(),
   comments: generateComments(),
+  statistic: generateStatistic(),
 }));
+const filters = generateFilter(data);
+const userWatchedFilms = countUserWatchedFilms(data);
+const userRank = getUserRank(userWatchedFilms);
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
@@ -24,8 +31,8 @@ const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
 
-render(siteHeaderElement, createUserProfileTemplate(), 'beforeend');
-render(siteMainElement, createSiteMenuTemplate(), 'beforeend');
+render(siteHeaderElement, createUserProfileTemplate(userRank), 'beforeend');
+render(siteMainElement, createSiteMenuTemplate(filters), 'beforeend');
 render(siteMainElement, createSortMenuTemplate(), 'beforeend');
 render(siteMainElement, createFilmsTemplate(data), 'beforeend');
 render(siteFooterStatisticsElement, createFooterStatisticsTemplate(FILMS_COUNT), 'beforeend');
