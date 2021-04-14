@@ -10,6 +10,9 @@ import {generateComments} from './mock/comment';
 import {generateStatistic, generateUserStatistic} from './mock/statistic';
 import {generateFilter} from './mock/filter';
 import {getUserRank} from './utils';
+import {FILMS_CARD_COUNT} from './const';
+import {createShowMoreButtonTemplate} from './view/show-more-button';
+import {createFilmCardTemplate} from './view/film-card';
 
 const FILMS_COUNT = 20;
 
@@ -38,3 +41,27 @@ render(siteMainElement, createFilmsTemplate(data), 'beforeend');
 render(siteFooterStatisticsElement, createFooterStatisticsTemplate(FILMS_COUNT), 'beforeend');
 render(siteBodyElement, createPopupTemplate(data[0]), 'beforeend');
 render(siteMainElement, createStatisticTemplate(userStatistic), 'beforeend');
+
+const siteFilmsListElement = document.querySelector('.films-list');
+const siteFilmsListContainerElement = siteFilmsListElement.querySelector('.films-list__container');
+
+if (data.length > FILMS_CARD_COUNT) {
+  let renderedFilmCount = FILMS_CARD_COUNT;
+
+  render(siteFilmsListElement, createShowMoreButtonTemplate(), 'beforeend');
+
+  const showMoreButton = siteMainElement.querySelector('.films-list__show-more');
+
+  showMoreButton.addEventListener('click', (evt) => {
+    evt.preventDefault();
+    data
+      .slice(renderedFilmCount, renderedFilmCount + FILMS_CARD_COUNT)
+      .forEach((film) => render(siteFilmsListContainerElement, createFilmCardTemplate(film), 'beforeend'));
+
+    renderedFilmCount += FILMS_CARD_COUNT;
+
+    if (renderedFilmCount >= data.length) {
+      showMoreButton.remove();
+    }
+  });
+}
