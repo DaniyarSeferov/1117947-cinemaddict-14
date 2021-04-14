@@ -14,7 +14,6 @@ const FILM_ACTORS_MIN = 3;
 const FILM_ACTORS_MAX = 7;
 const FILM_RUNTIME_MINUTES_MIN = 16;
 const FILM_RUNTIME_MINUTES_MAX = 80;
-const FILM_COMMENTS_MIN = 0;
 
 const generateTitle = () => {
   const titles = [

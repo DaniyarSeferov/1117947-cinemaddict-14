@@ -2,12 +2,12 @@ import {createStatisticRankTemplate} from './statistic-rank';
 import {createStatisticMenuTemplate} from './statistic-menu';
 import {createStatisticListTemplate} from './statistic-list';
 import {createStatisticItemTemplate} from './statistic-item';
+import {getUserRank} from '../utils';
 
-const STATISTIC_ITEMS_COUNT = 3;
-
-export const createStatisticTemplate = () => {
-  const statisticItems = new Array(STATISTIC_ITEMS_COUNT).fill(null).map(createStatisticItemTemplate);
-  const statisticRank = createStatisticRankTemplate();
+export const createStatisticTemplate = (userStatistic) => {
+  const userRank = getUserRank(userStatistic.watched.count);
+  const statisticItems = Object.entries(userStatistic).map(([name, data]) => createStatisticItemTemplate(name, data));
+  const statisticRank = createStatisticRankTemplate(userRank);
   const statisticMenu = createStatisticMenuTemplate();
   const statisticList = createStatisticListTemplate(statisticItems);
 

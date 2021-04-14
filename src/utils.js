@@ -83,3 +83,24 @@ export const getUserRank = (watched) => {
 export const countUserWatchedFilms = (films) => {
   return films.filter((film) => film.statistic.watched).length;
 };
+
+export const countUserWatchedFilmsDuration = (films) => {
+  return films.filter((film) => film.statistic.watched).reduce((accumulator, {film}) => {
+    return accumulator + film.runtime;
+  }, 0);
+};
+
+export const countUserWatchedFilmsTopGenre = (films) => {
+  const genres = {};
+  films.filter((film) => film.statistic.watched).forEach(({film}) => {
+    film.genres.forEach((genre) => {
+      if (!Object.prototype.hasOwnProperty.call(genres, genre)) {
+        genres[genre] = 0;
+      }
+      genres[genre]++;
+    });
+  });
+
+  const genresSorted = Object.entries(genres).sort((genreFirst, genreSecond) => genreSecond[1] - genreFirst[1]);
+  return genresSorted[0][0];
+};
