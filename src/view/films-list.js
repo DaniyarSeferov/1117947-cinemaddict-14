@@ -1,8 +1,4 @@
-import {createShowMoreButtonTemplate} from './show-more-button';
-
 export const createFilmsListTemplate = (films) => {
-  const showMore = createShowMoreButtonTemplate();
-
   return `<section class="films-list">
     <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
 
@@ -10,6 +6,5 @@ export const createFilmsListTemplate = (films) => {
       ${films.join('')}
     </div>
 
-    ${showMore}
   </section>`;
 };

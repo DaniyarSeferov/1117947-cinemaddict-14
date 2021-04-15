@@ -2,11 +2,9 @@ import {createPopupCommentsListTemplate} from './popup-comments-list';
 import {createPopupCommentAddTemplate} from './popup-comment-add';
 import {createPopupCommentTemplate} from './popup-comment';
 
-const POPUP_COMMENTS_COUNT = 4;
-
-export const createPopupCommentsTemplate = () => {
-  const comments = new Array(POPUP_COMMENTS_COUNT).fill(null).map(createPopupCommentTemplate);
-  const commentsList = createPopupCommentsListTemplate(comments);
+export const createPopupCommentsTemplate = (comments) => {
+  const commentsElement = comments.map(createPopupCommentTemplate);
+  const commentsList = createPopupCommentsListTemplate(commentsElement);
   const addComment = createPopupCommentAddTemplate();
 
   return `<section class="film-details__comments-wrap">
