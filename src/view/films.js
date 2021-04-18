@@ -1,22 +1,16 @@
 import FilmCard from './film-card';
-import {createFilmsListExtraTemplate} from './films-list-extra';
-import {createFilmsListTemplate} from './films-list';
+import FilmsListExtra from './films-list-extra';
+import FilmsList from './films-list';
 import {FILMS_CARD_COUNT} from '../const';
 import {createElement, getMostCommentedFilms, getTopRatedFilms} from '../utils';
 
 const createFilmsTemplate = (data) => {
-  const films = data.slice(0, FILMS_CARD_COUNT).map((film) => {
-    return new FilmCard(film).getTemplate();
-  });
-  const filmsTopRated = getTopRatedFilms(data).map((film) => {
-    return new FilmCard(film).getTemplate();
-  });
-  const filmsMostCommented = getMostCommentedFilms(data).map((film) => {
-    return new FilmCard(film).getTemplate();
-  });
-  const filmsList = createFilmsListTemplate(films);
-  const topRated = createFilmsListExtraTemplate('Top rated', filmsTopRated);
-  const mostCommented = createFilmsListExtraTemplate('Most commented', filmsMostCommented);
+  const films = data.slice(0, FILMS_CARD_COUNT).map((film) => new FilmCard(film).getTemplate());
+  const filmsTopRated = getTopRatedFilms(data).map((film) => new FilmCard(film).getTemplate());
+  const filmsMostCommented = getMostCommentedFilms(data).map((film) => new FilmCard(film).getTemplate());
+  const filmsList = new FilmsList(films).getTemplate();
+  const topRated = new FilmsListExtra('Top rated', filmsTopRated).getTemplate();
+  const mostCommented = new FilmsListExtra('Most commented', filmsMostCommented).getTemplate();
 
   return `<section class="films">
     ${filmsList}

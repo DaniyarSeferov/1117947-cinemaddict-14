@@ -1,8 +1,8 @@
-import {createPopupCommentsTemplate} from './popup-comments';
+import PopupComments from './popup-comments';
 import {createElement, humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils';
 
 const createPopupTemplate = ({film, comments}) => {
-  const commentsElement = createPopupCommentsTemplate(comments);
+  const commentsElement = new PopupComments(comments).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';

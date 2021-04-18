@@ -1,6 +1,5 @@
 import {createElement, humanizeFilmRuntime} from '../utils';
-
-const FILM_DESCRIPTION_MAX_LENGTH = 140;
+import {FILM_DESCRIPTION_MAX_LENGTH} from '../const';
 
 const createFilmCardTemplate = ({film, comments}) => {
   const description = film.description.length > FILM_DESCRIPTION_MAX_LENGTH ?

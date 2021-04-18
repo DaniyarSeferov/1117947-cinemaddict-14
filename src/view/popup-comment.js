@@ -1,6 +1,6 @@
-import {humanizeCommentDate} from '../utils';
+import {createElement, humanizeCommentDate} from '../utils';
 
-export const createPopupCommentTemplate = (data) => {
+const createPopupCommentTemplate = (data) => {
   const date = humanizeCommentDate(data.date);
 
   return `<span class="film-details__comment-emoji">
@@ -15,3 +15,26 @@ export const createPopupCommentTemplate = (data) => {
     </p>
   </div>`;
 };
+
+export default class PopupComment {
+  constructor(data) {
+    this._element = null;
+    this._data = data;
+  }
+
+  getTemplate() {
+    return createPopupCommentTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

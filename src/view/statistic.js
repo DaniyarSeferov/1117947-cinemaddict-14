@@ -1,15 +1,15 @@
-import {createStatisticRankTemplate} from './statistic-rank';
-import {createStatisticMenuTemplate} from './statistic-menu';
-import {createStatisticListTemplate} from './statistic-list';
-import {createStatisticItemTemplate} from './statistic-item';
+import StatisticRank from './statistic-rank';
+import StatisticMenu from './statistic-menu';
+import StatisticList from './statistic-list';
+import StatisticItem from './statistic-item';
 import {createElement, getUserRank} from '../utils';
 
 const createStatisticTemplate = (userStatistic) => {
   const userRank = getUserRank(userStatistic.watched.count);
-  const statisticItems = Object.entries(userStatistic).map(([name, data]) => createStatisticItemTemplate(name, data));
-  const statisticRank = createStatisticRankTemplate(userRank);
-  const statisticMenu = createStatisticMenuTemplate();
-  const statisticList = createStatisticListTemplate(statisticItems);
+  const statisticItems = Object.entries(userStatistic).map(([name, data]) => new StatisticItem(name, data).getTemplate());
+  const statisticRank = new StatisticRank(userRank);
+  const statisticMenu = new StatisticMenu().getTemplate();
+  const statisticList = new StatisticList(statisticItems).getTemplate();
 
   return `<section class="statistic">
     ${statisticRank}

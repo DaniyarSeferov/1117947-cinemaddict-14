@@ -1,4 +1,6 @@
-export const createPopupCommentAddTemplate = () => {
+import {createElement} from '../utils';
+
+const createPopupCommentAddTemplate = () => {
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label"></div>
 
@@ -29,3 +31,25 @@ export const createPopupCommentAddTemplate = () => {
     </div>
   </div>`;
 };
+
+export default class PopupCommentAdd {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupCommentAddTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
