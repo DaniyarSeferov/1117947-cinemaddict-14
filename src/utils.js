@@ -114,3 +114,30 @@ export const getMostCommentedFilms = (films) => {
   const filmsSorted = films.slice().sort((filmFirst, filmSecond) => filmSecond.comments.length - filmFirst.comments.length);
   return filmsSorted.slice(0, FILMS_CARD_EXTRA_COUNT);
 };
+
+export const RenderPosition = {
+  AFTERBEGIN: 'afterbegin',
+  BEFOREEND: 'beforeend',
+};
+
+export const renderElement = (container, element, place) => {
+  switch (place) {
+    case RenderPosition.AFTERBEGIN:
+      container.prepend(element);
+      break;
+    case RenderPosition.BEFOREEND:
+      container.append(element);
+      break;
+  }
+};
+
+export const renderTemplate = (container, template, place) => {
+  container.insertAdjacentHTML(place, template);
+};
+
+export const createElement = (template) => {
+  const newElement = document.createElement('div');
+  newElement.innerHTML = template.trim();
+
+  return newElement.firstChild;
+};

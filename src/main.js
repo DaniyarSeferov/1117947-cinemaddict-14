@@ -1,18 +1,18 @@
-import {createSiteMenuTemplate} from './view/site-menu';
-import {createSortMenuTemplate} from './view/sort-menu';
-import {createUserProfileTemplate} from './view/user-profile';
-import {createFooterStatisticsTemplate} from './view/footer-statistics';
-import {createFilmsTemplate} from './view/films';
-import {createPopupTemplate} from './view/popup';
-import {createStatisticTemplate} from './view/statistic';
+import SiteMenu from './view/site-menu';
+import SortMenu from './view/sort-menu';
+import UserProfile from './view/user-profile';
+import FooterStatistics from './view/footer-statistics';
+import Films from './view/films';
+import Popup from './view/popup';
+import Statistic from './view/statistic';
 import {generateFilm} from './mock/film';
 import {generateComments} from './mock/comment';
 import {generateStatistic, generateUserStatistic} from './mock/statistic';
 import {generateFilter} from './mock/filter';
-import {getUserRank} from './utils';
+import {getUserRank, renderElement, RenderPosition, renderTemplate} from './utils';
 import {FILMS_CARD_COUNT} from './const';
-import {createShowMoreButtonTemplate} from './view/show-more-button';
-import {createFilmCardTemplate} from './view/film-card';
+import ShowMoreButton from './view/show-more-button';
+import FilmCard from './view/film-card';
 
 const FILMS_COUNT = 20;
 
@@ -25,22 +25,18 @@ const filters = generateFilter(data);
 const userStatistic = generateUserStatistic(data);
 const userRank = getUserRank(userStatistic.watched.count);
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const siteBodyElement = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
-const siteFooterStatisticsElement = document.querySelector('.footer__statistics');
+const siteFooterElement = document.querySelector('.footer');
 
-render(siteHeaderElement, createUserProfileTemplate(userRank), 'beforeend');
-render(siteMainElement, createSiteMenuTemplate(filters), 'beforeend');
-render(siteMainElement, createSortMenuTemplate(), 'beforeend');
-render(siteMainElement, createFilmsTemplate(data), 'beforeend');
-render(siteFooterStatisticsElement, createFooterStatisticsTemplate(FILMS_COUNT), 'beforeend');
-render(siteBodyElement, createPopupTemplate(data[0]), 'beforeend');
-render(siteMainElement, createStatisticTemplate(userStatistic), 'beforeend');
+renderElement(siteHeaderElement, new UserProfile(userRank).getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMainElement, new SiteMenu(filters).getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMainElement, new SortMenu().getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMainElement, new Films(data).getElement(), RenderPosition.BEFOREEND);
+renderElement(siteFooterElement, new FooterStatistics(FILMS_COUNT).getElement(), RenderPosition.BEFOREEND);
+renderElement(siteBodyElement, new Popup(data[0]).getElement(), RenderPosition.BEFOREEND);
+renderElement(siteMainElement, new Statistic(userStatistic).getElement(), RenderPosition.BEFOREEND);
 
 const siteFilmsListElement = document.querySelector('.films-list');
 const siteFilmsListContainerElement = siteFilmsListElement.querySelector('.films-list__container');
@@ -48,7 +44,7 @@ const siteFilmsListContainerElement = siteFilmsListElement.querySelector('.films
 if (data.length > FILMS_CARD_COUNT) {
   let renderedFilmCount = FILMS_CARD_COUNT;
 
-  render(siteFilmsListElement, createShowMoreButtonTemplate(), 'beforeend');
+  renderElement(siteFilmsListElement, new ShowMoreButton().getElement(), RenderPosition.BEFOREEND);
 
   const showMoreButton = siteMainElement.querySelector('.films-list__show-more');
 
@@ -56,7 +52,7 @@ if (data.length > FILMS_CARD_COUNT) {
     evt.preventDefault();
     data
       .slice(renderedFilmCount, renderedFilmCount + FILMS_CARD_COUNT)
-      .forEach((film) => render(siteFilmsListContainerElement, createFilmCardTemplate(film), 'beforeend'));
+      .forEach((film) => renderTemplate(siteFilmsListContainerElement, new FilmCard(film).getElement(), RenderPosition.BEFOREEND));
 
     renderedFilmCount += FILMS_CARD_COUNT;
 

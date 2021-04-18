@@ -2,9 +2,9 @@ import {createStatisticRankTemplate} from './statistic-rank';
 import {createStatisticMenuTemplate} from './statistic-menu';
 import {createStatisticListTemplate} from './statistic-list';
 import {createStatisticItemTemplate} from './statistic-item';
-import {getUserRank} from '../utils';
+import {createElement, getUserRank} from '../utils';
 
-export const createStatisticTemplate = (userStatistic) => {
+const createStatisticTemplate = (userStatistic) => {
   const userRank = getUserRank(userStatistic.watched.count);
   const statisticItems = Object.entries(userStatistic).map(([name, data]) => createStatisticItemTemplate(name, data));
   const statisticRank = createStatisticRankTemplate(userRank);
@@ -24,3 +24,26 @@ export const createStatisticTemplate = (userStatistic) => {
 
   </section>`;
 };
+
+export default class Statistic {
+  constructor(userStatistic) {
+    this._element = null;
+    this._userStatistic = userStatistic;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate(this._userStatistic);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
