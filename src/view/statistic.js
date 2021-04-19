@@ -1,15 +1,15 @@
-import {createStatisticRankTemplate} from './statistic-rank';
-import {createStatisticMenuTemplate} from './statistic-menu';
-import {createStatisticListTemplate} from './statistic-list';
-import {createStatisticItemTemplate} from './statistic-item';
-import {getUserRank} from '../utils';
+import StatisticRank from './statistic-rank';
+import StatisticMenu from './statistic-menu';
+import StatisticList from './statistic-list';
+import StatisticItem from './statistic-item';
+import {createElement, getUserRank} from '../utils';
 
-export const createStatisticTemplate = (userStatistic) => {
+const createStatisticTemplate = (userStatistic) => {
   const userRank = getUserRank(userStatistic.watched.count);
-  const statisticItems = Object.entries(userStatistic).map(([name, data]) => createStatisticItemTemplate(name, data));
-  const statisticRank = createStatisticRankTemplate(userRank);
-  const statisticMenu = createStatisticMenuTemplate();
-  const statisticList = createStatisticListTemplate(statisticItems);
+  const statisticItems = Object.entries(userStatistic).map(([name, data]) => new StatisticItem(name, data).getTemplate());
+  const statisticRank = new StatisticRank(userRank).getTemplate();
+  const statisticMenu = new StatisticMenu().getTemplate();
+  const statisticList = new StatisticList(statisticItems).getTemplate();
 
   return `<section class="statistic">
     ${statisticRank}
@@ -24,3 +24,26 @@ export const createStatisticTemplate = (userStatistic) => {
 
   </section>`;
 };
+
+export default class Statistic {
+  constructor(userStatistic) {
+    this._element = null;
+    this._userStatistic = userStatistic;
+  }
+
+  getTemplate() {
+    return createStatisticTemplate(this._userStatistic);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

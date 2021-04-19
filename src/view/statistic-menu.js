@@ -1,4 +1,6 @@
-export const createStatisticMenuTemplate = () => {
+import {createElement} from '../utils';
+
+const createStatisticMenuTemplate = () => {
   return `<form action="https://echo.htmlacademy.ru/" method="get" class="statistic__filters">
     <p class="statistic__filters-description">Show stats:</p>
 
@@ -18,3 +20,25 @@ export const createStatisticMenuTemplate = () => {
     <label for="statistic-year" class="statistic__filters-label">Year</label>
   </form>`;
 };
+
+export default class StatisticMenu {
+  constructor() {
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createStatisticMenuTemplate();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

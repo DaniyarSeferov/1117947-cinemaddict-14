@@ -1,8 +1,7 @@
-import {humanizeFilmRuntime} from '../utils';
+import {createElement, humanizeFilmRuntime} from '../utils';
+import {FILM_DESCRIPTION_MAX_LENGTH} from '../const';
 
-const FILM_DESCRIPTION_MAX_LENGTH = 140;
-
-export const createFilmCardTemplate = ({film, comments}) => {
+const createFilmCardTemplate = ({film, comments}) => {
   const description = film.description.length > FILM_DESCRIPTION_MAX_LENGTH ?
     `${film.description.slice(0, FILM_DESCRIPTION_MAX_LENGTH - 1)}…` : film.description;
   const runtime = humanizeFilmRuntime(film.runtime);
@@ -26,3 +25,26 @@ export const createFilmCardTemplate = ({film, comments}) => {
     </div>
   </article>`;
 };
+
+export default class FilmCard {
+  constructor(data) {
+    this._element = null;
+    this._data = data;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

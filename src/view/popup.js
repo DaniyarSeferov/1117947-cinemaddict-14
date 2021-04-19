@@ -1,8 +1,8 @@
-import {createPopupCommentsTemplate} from './popup-comments';
-import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils';
+import PopupComments from './popup-comments';
+import {createElement, humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils';
 
-export const createPopupTemplate = ({film, comments}) => {
-  const commentsElement = createPopupCommentsTemplate(comments);
+const createPopupTemplate = ({film, comments}) => {
+  const commentsElement = new PopupComments(comments).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
@@ -90,3 +90,26 @@ export const createPopupTemplate = ({film, comments}) => {
   </form>
 </section>`;
 };
+
+export default class Popup {
+  constructor(data) {
+    this._element = null;
+    this._data = data;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._data);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
