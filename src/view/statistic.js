@@ -7,7 +7,7 @@ import {createElement, getUserRank} from '../utils';
 const createStatisticTemplate = (userStatistic) => {
   const userRank = getUserRank(userStatistic.watched.count);
   const statisticItems = Object.entries(userStatistic).map(([name, data]) => new StatisticItem(name, data).getTemplate());
-  const statisticRank = new StatisticRank(userRank);
+  const statisticRank = new StatisticRank(userRank).getTemplate();
   const statisticMenu = new StatisticMenu().getTemplate();
   const statisticList = new StatisticList(statisticItems).getTemplate();
 
