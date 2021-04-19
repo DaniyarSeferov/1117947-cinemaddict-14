@@ -49,9 +49,9 @@ const renderFilmCard = (filmsListContainer, film) => {
   const popupComponent = new PopupView(film);
 
   const showPopup = () => {
+    siteBodyElement.classList.add('hide-overflow');
     renderElement(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
     document.addEventListener('keydown', onEscKeyDown);
-    siteBodyElement.classList.add('hide-overflow');
   };
 
   const hidePopup = () => {
