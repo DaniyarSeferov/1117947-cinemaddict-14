@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createSiteMenuTemplate = (filters) => {
   const filtersElement = filters.map((filter) => {
@@ -15,25 +15,13 @@ const createSiteMenuTemplate = (filters) => {
   </nav>`;
 };
 
-export default class SiteMenu {
+export default class SiteMenu extends Abstract {
   constructor(filters) {
-    this._element = null;
+    super();
     this._filters = filters;
   }
 
   getTemplate() {
     return createSiteMenuTemplate(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

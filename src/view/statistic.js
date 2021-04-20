@@ -2,7 +2,8 @@ import StatisticRank from './statistic-rank';
 import StatisticMenu from './statistic-menu';
 import StatisticList from './statistic-list';
 import StatisticItem from './statistic-item';
-import {createElement, getUserRank} from '../utils';
+import {getUserRank} from '../utils/film';
+import Abstract from './abstract';
 
 const createStatisticTemplate = (userStatistic) => {
   const userRank = getUserRank(userStatistic.watched.count);
@@ -25,25 +26,13 @@ const createStatisticTemplate = (userStatistic) => {
   </section>`;
 };
 
-export default class Statistic {
+export default class Statistic extends Abstract {
   constructor(userStatistic) {
-    this._element = null;
+    super();
     this._userStatistic = userStatistic;
   }
 
   getTemplate() {
     return createStatisticTemplate(this._userStatistic);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

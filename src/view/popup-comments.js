@@ -1,7 +1,7 @@
 import PopupCommentsList from './popup-comments-list';
 import PopupCommentAdd from './popup-comment-add';
 import PopupComment from './popup-comment';
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createPopupCommentsTemplate = (comments) => {
   const commentsElement = comments.map((comment) => new PopupComment(comment).getTemplate());
@@ -17,25 +17,13 @@ const createPopupCommentsTemplate = (comments) => {
   </section>`;
 };
 
-export default class PopupComments {
+export default class PopupComments extends Abstract {
   constructor(comments) {
-    this._element = null;
+    super();
     this._comments = comments;
   }
 
   getTemplate() {
     return createPopupCommentsTemplate(this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

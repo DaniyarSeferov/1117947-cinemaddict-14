@@ -1,4 +1,5 @@
-import {createElement, humanizeCommentDate} from '../utils';
+import {humanizeCommentDate} from '../utils/film';
+import Abstract from './abstract';
 
 const createPopupCommentTemplate = (data) => {
   const date = humanizeCommentDate(data.date);
@@ -16,25 +17,13 @@ const createPopupCommentTemplate = (data) => {
   </div>`;
 };
 
-export default class PopupComment {
+export default class PopupComment extends Abstract {
   constructor(data) {
-    this._element = null;
+    super();
     this._data = data;
   }
 
   getTemplate() {
     return createPopupCommentTemplate(this._data);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {countUserWatchedFilms} from '../utils';
+import {countUserWatchedFilms} from '../utils/film';
 
 const filmToFilterMap = {
   all: () => ({title: 'All movies'}),

@@ -1,5 +1,6 @@
 import PopupComments from './popup-comments';
-import {createElement, humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils';
+import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
+import Abstract from './abstract';
 
 const createPopupTemplate = ({film, comments}) => {
   const commentsElement = new PopupComments(comments).getTemplate();
@@ -91,25 +92,13 @@ const createPopupTemplate = ({film, comments}) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends Abstract {
   constructor(data) {
-    this._element = null;
+    super();
     this._data = data;
   }
 
   getTemplate() {
     return createPopupTemplate(this._data);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

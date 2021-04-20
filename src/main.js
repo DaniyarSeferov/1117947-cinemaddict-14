@@ -9,13 +9,12 @@ import {generateFilm} from './mock/film';
 import {generateComments} from './mock/comment';
 import {generateStatistic, generateUserStatistic} from './mock/statistic';
 import {generateFilter} from './mock/filter';
+import {render, RenderPosition} from './utils/render';
 import {
   getMostCommentedFilms,
   getTopRatedFilms,
-  getUserRank,
-  renderElement,
-  RenderPosition
-} from './utils';
+  getUserRank
+} from './utils/film';
 import {FILMS_CARD_COUNT} from './const';
 import ShowMoreButtonView from './view/show-more-button';
 import FilmCardView from './view/film-card';
@@ -39,10 +38,10 @@ const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 
-renderElement(siteHeaderElement, new UserProfileView(userRank).getElement(), RenderPosition.BEFOREEND);
-renderElement(siteMainElement, new SiteMenuView(filters).getElement(), RenderPosition.BEFOREEND);
-renderElement(siteMainElement, new SortMenuView().getElement(), RenderPosition.BEFOREEND);
-renderElement(siteFooterElement, new FooterStatisticsView(FILMS_COUNT).getElement(), RenderPosition.BEFOREEND);
+render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
+render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
+render(siteMainElement, new SortMenuView(), RenderPosition.BEFOREEND);
+render(siteFooterElement, new FooterStatisticsView(FILMS_COUNT), RenderPosition.BEFOREEND);
 
 const renderFilmCard = (filmsListContainer, film) => {
   const filmCardComponent = new FilmCardView(film);
@@ -50,7 +49,7 @@ const renderFilmCard = (filmsListContainer, film) => {
 
   const showPopup = () => {
     siteBodyElement.classList.add('hide-overflow');
-    renderElement(siteBodyElement, popupComponent.getElement(), RenderPosition.BEFOREEND);
+    render(siteBodyElement, popupComponent, RenderPosition.BEFOREEND);
     document.addEventListener('keydown', onEscKeyDown);
   };
 
@@ -78,29 +77,29 @@ const renderFilmCard = (filmsListContainer, film) => {
   filmCardComponent.getElement().querySelector('.film-card__poster').addEventListener('click', onFilmCardClick);
   filmCardComponent.getElement().querySelector('.film-card__comments').addEventListener('click', onFilmCardClick);
 
-  renderElement(filmsListContainer, filmCardComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmsListContainer, filmCardComponent, RenderPosition.BEFOREEND);
 };
 
 const renderFilmsContainer = (filmsContainer, data) => {
   const filmsComponent = new FilmsView();
   const filmsListComponent = new FilmsListView();
 
-  renderElement(filmsContainer, filmsComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmsContainer, filmsComponent, RenderPosition.BEFOREEND);
 
   if (!data.length) {
-    renderElement(filmsComponent.getElement(), new FilmsListEmptyView().getElement(), RenderPosition.AFTERBEGIN);
+    render(filmsComponent, new FilmsListEmptyView(), RenderPosition.AFTERBEGIN);
     return;
   }
 
-  renderElement(filmsComponent.getElement(), filmsListComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmsComponent, filmsListComponent, RenderPosition.BEFOREEND);
   const filmsListContainer = filmsListComponent.getElement().querySelector('.films-list__container');
   const topRatedComponent = new FilmsListExtraView('Top rated');
   const mostCommentedComponent = new FilmsListExtraView('Most commented');
   const topRatedContainer = topRatedComponent.getElement().querySelector('.films-list__container');
   const mostCommentedContainer = mostCommentedComponent.getElement().querySelector('.films-list__container');
 
-  renderElement(filmsComponent.getElement(), topRatedComponent.getElement(), RenderPosition.BEFOREEND);
-  renderElement(filmsComponent.getElement(), mostCommentedComponent.getElement(), RenderPosition.BEFOREEND);
+  render(filmsComponent, topRatedComponent, RenderPosition.BEFOREEND);
+  render(filmsComponent, mostCommentedComponent, RenderPosition.BEFOREEND);
 
   data
     .slice(0, Math.min(data.length, FILMS_CARD_COUNT))
@@ -112,7 +111,7 @@ const renderFilmsContainer = (filmsContainer, data) => {
   if (data.length > FILMS_CARD_COUNT) {
     let renderedFilmCount = FILMS_CARD_COUNT;
 
-    renderElement(filmsListComponent.getElement(), new ShowMoreButtonView().getElement(), RenderPosition.BEFOREEND);
+    render(filmsListComponent, new ShowMoreButtonView(), RenderPosition.BEFOREEND);
 
     const showMoreButton = siteMainElement.querySelector('.films-list__show-more');
 
@@ -132,4 +131,4 @@ const renderFilmsContainer = (filmsContainer, data) => {
 };
 
 renderFilmsContainer(siteMainElement, data);
-renderElement(siteMainElement, new StatisticView(userStatistic).getElement(), RenderPosition.BEFOREEND);
+render(siteMainElement, new StatisticView(userStatistic), RenderPosition.BEFOREEND);
