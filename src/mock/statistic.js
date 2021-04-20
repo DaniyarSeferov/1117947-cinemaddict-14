@@ -1,9 +1,9 @@
 import {
   countUserWatchedFilms,
   countUserWatchedFilmsDuration,
-  countUserWatchedFilmsTopGenre,
-  getRandomInteger
-} from '../utils';
+  countUserWatchedFilmsTopGenre
+} from '../utils/film';
+import {getRandomInteger} from '../utils/common';
 
 export const generateStatistic = () => {
   return {

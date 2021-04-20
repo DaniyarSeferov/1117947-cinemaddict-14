@@ -1,5 +1,6 @@
-import {createElement, humanizeFilmRuntime} from '../utils';
+import {humanizeFilmRuntime} from '../utils/film';
 import {FILMS_MOVIE_COUNT} from '../const';
+import Abstract from './abstract';
 
 const createStatisticItemTemplate = (name, data) => {
   const description = name === 'watched' ?
@@ -10,26 +11,14 @@ const createStatisticItemTemplate = (name, data) => {
   <p class="statistic__item-text">${text} <span class="statistic__item-description">${description}</span></p>`;
 };
 
-export default class StatisticItem {
+export default class StatisticItem extends Abstract {
   constructor(name, data) {
-    this._element = null;
+    super();
     this._name = name;
     this._data = data;
   }
 
   getTemplate() {
     return createStatisticItemTemplate(this._name, this._data);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

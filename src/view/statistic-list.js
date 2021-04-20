@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createStatisticListTemplate = (items) => {
   const listItems = items.map((item) => `<li class="statistic__text-item">${item}</li>`).join('');
@@ -8,25 +8,13 @@ const createStatisticListTemplate = (items) => {
   </ul>`;
 };
 
-export default class StatisticList {
+export default class StatisticList extends Abstract {
   constructor(items) {
-    this._element = null;
+    super();
     this._items = items;
   }
 
   getTemplate() {
     return createStatisticListTemplate(this._items);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

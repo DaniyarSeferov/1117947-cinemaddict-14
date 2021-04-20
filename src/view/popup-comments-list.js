@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createPopupCommentsListTemplate = (comments) => {
   const listItems = comments.map((item) => `<li class="film-details__comment">${item}</li>`).join('');
@@ -8,25 +8,13 @@ const createPopupCommentsListTemplate = (comments) => {
   </ul>`;
 };
 
-export default class PopupCommentsList {
+export default class PopupCommentsList extends Abstract {
   constructor(comments) {
-    this._element = null;
+    super();
     this._comments = comments;
   }
 
   getTemplate() {
     return createPopupCommentsListTemplate(this._comments);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createStatisticRankTemplate = (rank) => {
   return `<p class="statistic__rank">
@@ -8,25 +8,13 @@ const createStatisticRankTemplate = (rank) => {
   </p>`;
 };
 
-export default class StatisticRank {
+export default class StatisticRank extends Abstract {
   constructor(userRank) {
-    this._element = null;
+    super();
     this._userRank = userRank;
   }
 
   getTemplate() {
     return createStatisticRankTemplate(this._userRank);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

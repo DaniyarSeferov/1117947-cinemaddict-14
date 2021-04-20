@@ -1,5 +1,6 @@
 import PopupComments from './popup-comments';
-import {createElement, humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils';
+import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
+import Abstract from './abstract';
 
 const createPopupTemplate = ({film, comments}) => {
   const commentsElement = new PopupComments(comments).getTemplate();
@@ -91,25 +92,28 @@ const createPopupTemplate = ({film, comments}) => {
 </section>`;
 };
 
-export default class Popup {
+export default class Popup extends Abstract {
   constructor(data) {
-    this._element = null;
+    super();
     this._data = data;
+    this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
   }
 
   getTemplate() {
     return createPopupTemplate(this._data);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _closePopupClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.closePopupClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setClosePopupClickHandler(callback) {
+    this._callback.closePopupClick = callback;
+    this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closePopupClickHandler);
+  }
+
+  removeClosePopupClickHandler() {
+    this.getElement().querySelector('.film-details__close-btn').removeEventListener('click', this._closePopupClickHandler);
   }
 }

@@ -1,4 +1,4 @@
-import {generateRandomDate, getRandom, getRandomArrayItem, getRandomArrayItems, getRandomInteger} from '../utils';
+import {generateRandomDate, getRandom, getRandomArrayItem, getRandomArrayItems, getRandomInteger} from '../utils/common';
 
 const FILM_DESCRIPTION_MIN_COUNT = 1;
 const FILM_DESCRIPTION_MAX_COUNT = 5;

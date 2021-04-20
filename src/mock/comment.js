@@ -1,4 +1,4 @@
-import {generateRandomDate, getRandomArrayItem, getRandomInteger} from '../utils';
+import {generateRandomDate, getRandomArrayItem, getRandomInteger} from '../utils/common';
 
 const COMMENT_YEAR_MIN = 1990;
 const COMMENT_YEAR_MAX = 2021;

@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createFilmsListLoadingTemplate = () => {
   return `<section class="films-list">
@@ -6,24 +6,8 @@ const createFilmsListLoadingTemplate = () => {
   </section>`;
 };
 
-export default class FilmsListLoading {
-  constructor() {
-    this._element = null;
-  }
-
+export default class FilmsListLoading extends Abstract {
   getTemplate() {
     return createFilmsListLoadingTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

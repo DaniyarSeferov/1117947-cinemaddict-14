@@ -1,4 +1,4 @@
-import {createElement} from '../utils';
+import Abstract from './abstract';
 
 const createPopupCommentAddTemplate = () => {
   return `<div class="film-details__new-comment">
@@ -32,24 +32,8 @@ const createPopupCommentAddTemplate = () => {
   </div>`;
 };
 
-export default class PopupCommentAdd {
-  constructor() {
-    this._element = null;
-  }
-
+export default class PopupCommentAdd extends Abstract {
   getTemplate() {
     return createPopupCommentAddTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
