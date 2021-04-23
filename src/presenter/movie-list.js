@@ -6,8 +6,7 @@ import FilmsListLoadingView from '../view/films-list-loading';
 import ShowMoreButtonView from '../view/show-more-button';
 import {remove, render, RenderPosition} from '../utils/render';
 import {FILMS_CARD_COUNT} from '../const';
-import FilmCardView from '../view/film-card';
-import PopupView from '../view/popup';
+import Movie from './movie';
 
 export default class MovieList {
   constructor(boardContainer) {
@@ -24,7 +23,6 @@ export default class MovieList {
   init(boardFilms) {
     this._boardFilms = boardFilms.slice();
 
-    this._bodyElement = document.querySelector('body');
     this._filmsListContainerElement = this._filmsListComponent.getElement().querySelector('.films-list__container');
 
     this._renderBoard();
@@ -35,41 +33,8 @@ export default class MovieList {
   }
 
   _renderFilm(film) {
-    const filmCardComponent = new FilmCardView(film);
-    const popupComponent = new PopupView(film);
-
-    const showPopup = () => {
-      this._bodyElement.classList.add('hide-overflow');
-      render(this._bodyElement, popupComponent, RenderPosition.BEFOREEND);
-      document.addEventListener('keydown', onEscKeyDown);
-    };
-
-    const hidePopup = () => {
-      if (this._bodyElement.contains(popupComponent.getElement())) {
-        this._bodyElement.removeChild(popupComponent.getElement());
-      }
-
-      popupComponent.removeClosePopupClickHandler();
-      this._bodyElement.classList.remove('hide-overflow');
-    };
-
-    const onEscKeyDown = (evt) => {
-      if (evt.key === 'Escape' || evt.key === 'Esc') {
-        evt.preventDefault();
-        hidePopup();
-        document.removeEventListener('keydown', onEscKeyDown);
-      }
-    };
-
-    const onFilmCardClick = () => {
-      showPopup();
-      document.addEventListener('keydown', onEscKeyDown);
-      popupComponent.setClosePopupClickHandler(hidePopup);
-    };
-
-    filmCardComponent.setOpenPopupClickHandler(onFilmCardClick);
-
-    render(this._filmsListContainerElement, filmCardComponent, RenderPosition.BEFOREEND);
+    const filmPresenter = new Movie(this._filmsListContainerElement);
+    filmPresenter.init(film);
   }
 
   _renderFilms(from, to) {
