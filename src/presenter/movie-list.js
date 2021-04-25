@@ -11,6 +11,7 @@ import Movie from './movie';
 export default class MovieList {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
+    this._renderedFilmsCount = FILMS_CARD_COUNT;
 
     this._sortMenuComponent = new SortMenuView();
     this._filmsComponent = new FilmsView();
@@ -18,6 +19,8 @@ export default class MovieList {
     this._filmsListEmptyComponent = new FilmsListEmptyView();
     this._filmsListLoadingComponent = new FilmsListLoadingView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
+
+    this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
   init(boardFilms) {
@@ -67,22 +70,19 @@ export default class MovieList {
     render(this._filmsComponent, this._filmsListLoadingComponent, RenderPosition.BEFOREEND);
   }
 
-  _renderShowMoreButton() {
-    let renderedFilmCount = FILMS_CARD_COUNT;
+  _handleShowMoreButtonClick() {
+    this._renderFilms(this._renderedFilmsCount, this._renderedFilmsCount + FILMS_CARD_COUNT);
+    this._renderedFilmsCount += FILMS_CARD_COUNT;
 
+    if (this._renderedFilmsCount >= this._boardFilms.length) {
+      remove(this._showMoreButtonComponent);
+    }
+  }
+
+  _renderShowMoreButton() {
     render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
 
-    this._showMoreButtonComponent.setClickHandler(() => {
-      this._boardFilms
-        .slice(renderedFilmCount, renderedFilmCount + FILMS_CARD_COUNT)
-        .forEach((film) => this._renderFilm(film));
-
-      renderedFilmCount += FILMS_CARD_COUNT;
-
-      if (renderedFilmCount >= this._boardFilms.length) {
-        remove(this._showMoreButtonComponent);
-      }
-    });
+    this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
   }
 
   _renderBoard() {
