@@ -7,11 +7,13 @@ import ShowMoreButtonView from '../view/show-more-button';
 import {remove, render, RenderPosition} from '../utils/render';
 import {FILMS_CARD_COUNT} from '../const';
 import Movie from './movie';
+import {updateItem} from '../utils/common';
 
 export default class MovieList {
   constructor(boardContainer) {
     this._boardContainer = boardContainer;
     this._renderedFilmsCount = FILMS_CARD_COUNT;
+    this._filmPresenter = {};
 
     this._sortMenuComponent = new SortMenuView();
     this._filmsComponent = new FilmsView();
@@ -20,6 +22,7 @@ export default class MovieList {
     this._filmsListLoadingComponent = new FilmsListLoadingView();
     this._showMoreButtonComponent = new ShowMoreButtonView();
 
+    this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
   }
 
@@ -36,8 +39,9 @@ export default class MovieList {
   }
 
   _renderFilm(film) {
-    const filmPresenter = new Movie(this._filmsListContainerElement);
+    const filmPresenter = new Movie(this._filmsListContainerElement, this._handleFilmChange);
     filmPresenter.init(film);
+    this._filmPresenter[film.film.id] = filmPresenter;
   }
 
   _renderFilms(from, to) {
@@ -70,6 +74,11 @@ export default class MovieList {
     render(this._filmsComponent, this._filmsListLoadingComponent, RenderPosition.BEFOREEND);
   }
 
+  _handleFilmChange(updatedFilm) {
+    this._boardFilms = updateItem(this._boardFilms, updatedFilm);
+    this._filmPresenter[updatedFilm.film.id].init(updatedFilm);
+  }
+
   _handleShowMoreButtonClick() {
     this._renderFilms(this._renderedFilmsCount, this._renderedFilmsCount + FILMS_CARD_COUNT);
     this._renderedFilmsCount += FILMS_CARD_COUNT;
@@ -97,5 +106,14 @@ export default class MovieList {
     this._renderFilmsListContainer();
 
     this._renderFilmsList();
+  }
+
+  _clearFilmList() {
+    Object
+      .values(this._filmPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._filmPresenter = {};
+    this._renderedFilmsCount = FILMS_CARD_COUNT;
+    remove(this._showMoreButtonComponent);
   }
 }

@@ -2,12 +2,15 @@ import PopupComments from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
 import Abstract from './abstract';
 
-const createPopupTemplate = ({film, comments}) => {
+const createPopupTemplate = ({film, comments, statistic}) => {
   const commentsElement = new PopupComments(comments).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
   const genres = film.genres.map((genre) => `<span class="film-details__genre">${genre}</span>`).join(' ');
+  const favoriteAttribute = statistic.favorite ? 'checked' : '';
+  const watchlistAttribute = statistic.watchlist ? 'checked' : '';
+  const watchedAttribute = statistic.watched ? 'checked' : '';
 
   return `<section class="film-details">
   <form class="film-details__inner" action="" method="get">
@@ -74,13 +77,13 @@ const createPopupTemplate = ({film, comments}) => {
       </div>
 
       <section class="film-details__controls">
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watchlist" name="watchlist" ${watchlistAttribute}>
         <label for="watchlist" class="film-details__control-label film-details__control-label--watchlist">Add to watchlist</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="watched" name="watched" ${watchedAttribute}>
         <label for="watched" class="film-details__control-label film-details__control-label--watched">Already watched</label>
 
-        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite">
+        <input type="checkbox" class="film-details__control-input visually-hidden" id="favorite" name="favorite" ${favoriteAttribute}>
         <label for="favorite" class="film-details__control-label film-details__control-label--favorite">Add to favorites</label>
       </section>
     </div>
@@ -97,6 +100,9 @@ export default class Popup extends Abstract {
     super();
     this._data = data;
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
+    this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
+    this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
+    this._watchedClickHandler = this._watchedClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -108,6 +114,21 @@ export default class Popup extends Abstract {
     this._callback.closePopupClick();
   }
 
+  _favoriteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+  }
+
+  _watchlistClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchlistClick();
+  }
+
+  _watchedClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.watchedClick();
+  }
+
   setClosePopupClickHandler(callback) {
     this._callback.closePopupClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closePopupClickHandler);
@@ -115,5 +136,20 @@ export default class Popup extends Abstract {
 
   removeClosePopupClickHandler() {
     this.getElement().querySelector('.film-details__close-btn').removeEventListener('click', this._closePopupClickHandler);
+  }
+
+  setFavoriteClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector('#favorite').addEventListener('click', this._favoriteClickHandler);
+  }
+
+  setWatchlistClickHandler(callback) {
+    this._callback.watchlistClick = callback;
+    this.getElement().querySelector('#watchlist').addEventListener('click', this._watchlistClickHandler);
+  }
+
+  setWatchedClickHandler(callback) {
+    this._callback.watchedClick = callback;
+    this.getElement().querySelector('#watched').addEventListener('click', this._watchedClickHandler);
   }
 }
