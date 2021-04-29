@@ -2,13 +2,20 @@ import FilmCardView from '../view/film-card';
 import PopupView from '../view/popup';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 
+const Mode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POPUP',
+};
+
 export default class Movie {
-  constructor(filmListContainer, changeData) {
+  constructor(filmListContainer, changeData, changeMode) {
     this._filmListContainer = filmListContainer;
     this._changeData = changeData;
+    this._changeMode = changeMode;
 
     this._filmCardComponent = null;
     this._popupComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleOpenPopupClick = this._handleOpenPopupClick.bind(this);
     this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
@@ -33,17 +40,15 @@ export default class Movie {
     this._filmCardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._filmCardComponent.setWatchedClickHandler(this._handleWatchedClick);
 
-    if (prevFilmCardComponent === null || prevPopupComponent === null) {
+    if (prevFilmCardComponent === null) {
       render(this._filmListContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    if (this._filmListContainer.contains(prevFilmCardComponent.getElement())) {
-      replace(this._filmCardComponent, prevFilmCardComponent);
-    }
+    replace(this._filmCardComponent, prevFilmCardComponent);
 
-    if (this._bodyElement.contains(prevPopupComponent.getElement())) {
-      replace(this._popupComponent, prevPopupComponent);
+    if (this._mode === Mode.POPUP && prevPopupComponent !== null) {
+      this._showPopup();
     }
 
     remove(prevFilmCardComponent);
@@ -55,6 +60,12 @@ export default class Movie {
     remove(this._popupComponent);
   }
 
+  resetView() {
+    if (this._mode === Mode.POPUP) {
+      this._hidePopup();
+    }
+  }
+
   _showPopup() {
     this._bodyElement.classList.add('hide-overflow');
     render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
@@ -62,6 +73,7 @@ export default class Movie {
     this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
     this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
     this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._mode = Mode.POPUP;
   }
 
   _hidePopup() {
@@ -71,6 +83,7 @@ export default class Movie {
 
     this._popupComponent.removeClosePopupClickHandler();
     this._bodyElement.classList.remove('hide-overflow');
+    this._mode = Mode.DEFAULT;
   }
 
   _escKeyDownHandler(evt) {
@@ -82,6 +95,7 @@ export default class Movie {
   }
 
   _handleOpenPopupClick() {
+    this._changeMode();
     this._showPopup();
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
