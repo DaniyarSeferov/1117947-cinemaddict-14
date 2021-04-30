@@ -21,6 +21,7 @@ const filters = generateFilter(data);
 const userStatistic = generateUserStatistic(data);
 const userRank = getUserRank(userStatistic.watched.count);
 
+const bodyElement = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
@@ -28,7 +29,7 @@ const siteFooterElement = document.querySelector('.footer');
 render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
 render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 
-const movieListPresenter = new MovieListPresenter(siteMainElement);
+const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement);
 movieListPresenter.init(data);
 
 render(siteFooterElement, new FooterStatisticsView(FILMS_COUNT), RenderPosition.BEFOREEND);

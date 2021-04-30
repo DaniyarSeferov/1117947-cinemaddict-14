@@ -12,8 +12,9 @@ import FilmsListExtraView from '../view/films-list-extra';
 import {getMostCommentedFilms, getTopRatedFilms} from '../utils/film';
 
 export default class MovieList {
-  constructor(boardContainer) {
+  constructor(boardContainer, popupContainer) {
     this._boardContainer = boardContainer;
+    this._popupContainer = popupContainer;
     this._renderedFilmsCount = FILMS_CARD_COUNT;
     this._Presenter = {
       main: {},
@@ -50,7 +51,7 @@ export default class MovieList {
   }
 
   _renderFilm(film, container, presenter) {
-    const filmPresenter = new Movie(container, this._handleFilmChange, this._handleModeChange);
+    const filmPresenter = new Movie(container, this._popupContainer, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
     presenter[film.film.id] = filmPresenter;
   }

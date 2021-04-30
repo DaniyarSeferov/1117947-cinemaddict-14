@@ -8,8 +8,9 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmListContainer, changeData, changeMode) {
+  constructor(filmListContainer, popupContainer, changeData, changeMode) {
     this._filmListContainer = filmListContainer;
+    this._popupContainer = popupContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
 
@@ -29,7 +30,6 @@ export default class Movie {
     const prevFilmCardComponent = this._filmCardComponent;
     const prevPopupComponent = this._popupComponent;
 
-    this._bodyElement = document.querySelector('body');
     this._filmCardComponent = new FilmCardView(this._film);
     this._popupComponent = new PopupView(this._film);
 
@@ -65,8 +65,8 @@ export default class Movie {
   }
 
   _showPopup() {
-    this._bodyElement.classList.add('hide-overflow');
-    render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
+    this._popupContainer.classList.add('hide-overflow');
+    render(this._popupContainer, this._popupComponent, RenderPosition.BEFOREEND);
     this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
     this._popupComponent.setFavoriteClickHandler(this._handleClick('favorite'));
     this._popupComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
@@ -75,12 +75,12 @@ export default class Movie {
   }
 
   _hidePopup() {
-    if (this._bodyElement.contains(this._popupComponent.getElement())) {
-      this._bodyElement.removeChild(this._popupComponent.getElement());
+    if (this._popupContainer.contains(this._popupComponent.getElement())) {
+      this._popupContainer.removeChild(this._popupComponent.getElement());
     }
 
     this._popupComponent.removeClosePopupClickHandler();
-    this._bodyElement.classList.remove('hide-overflow');
+    this._popupContainer.classList.remove('hide-overflow');
     this._mode = Mode.DEFAULT;
   }
 
