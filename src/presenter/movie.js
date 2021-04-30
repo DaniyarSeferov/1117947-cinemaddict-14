@@ -20,9 +20,7 @@ export default class Movie {
     this._handleOpenPopupClick = this._handleOpenPopupClick.bind(this);
     this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
-    this._handleWatchlistClick = this._handleWatchlistClick.bind(this);
-    this._handleWatchedClick = this._handleWatchedClick.bind(this);
+    this._handleClick = this._handleClick.bind(this);
   }
 
   init(film) {
@@ -36,9 +34,9 @@ export default class Movie {
     this._popupComponent = new PopupView(this._film);
 
     this._filmCardComponent.setOpenPopupClickHandler(this._handleOpenPopupClick);
-    this._filmCardComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._filmCardComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._filmCardComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._filmCardComponent.setFavoriteClickHandler(this._handleClick('favorite'));
+    this._filmCardComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
+    this._filmCardComponent.setWatchedClickHandler(this._handleClick('watched'));
 
     if (prevFilmCardComponent === null) {
       render(this._filmListContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
@@ -70,9 +68,9 @@ export default class Movie {
     this._bodyElement.classList.add('hide-overflow');
     render(this._bodyElement, this._popupComponent, RenderPosition.BEFOREEND);
     this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
-    this._popupComponent.setFavoriteClickHandler(this._handleFavoriteClick);
-    this._popupComponent.setWatchlistClickHandler(this._handleWatchlistClick);
-    this._popupComponent.setWatchedClickHandler(this._handleWatchedClick);
+    this._popupComponent.setFavoriteClickHandler(this._handleClick('favorite'));
+    this._popupComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
+    this._popupComponent.setWatchedClickHandler(this._handleClick('watched'));
     this._mode = Mode.POPUP;
   }
 
@@ -104,57 +102,23 @@ export default class Movie {
     this._hidePopup();
   }
 
-  _handleFavoriteClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          statistic: Object.assign(
-            {},
-            this._film.statistic,
-            {
-              favorite: !this._film.statistic.favorite,
-            },
-          ),
-        },
-      ),
-    );
-  }
-
-  _handleWatchlistClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          statistic: Object.assign(
-            {},
-            this._film.statistic,
-            {
-              watchlist: !this._film.statistic.watchlist,
-            },
-          ),
-        },
-      ),
-    );
-  }
-
-  _handleWatchedClick() {
-    this._changeData(
-      Object.assign(
-        {},
-        this._film,
-        {
-          statistic: Object.assign(
-            {},
-            this._film.statistic,
-            {
-              watched: !this._film.statistic.watched,
-            },
-          ),
-        },
-      ),
-    );
+  _handleClick(changeKey) {
+    return () => {
+      this._changeData(
+        Object.assign(
+          {},
+          this._film,
+          {
+            statistic: Object.assign(
+              {},
+              this._film.statistic,
+              {
+                [changeKey]: !this._film.statistic[changeKey],
+              },
+            ),
+          },
+        ),
+      );
+    };
   }
 }

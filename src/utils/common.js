@@ -45,7 +45,7 @@ export const generateRandomDate = (yearMin, yearMax) => {
 };
 
 export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
+  const index = items.findIndex((item) => item.film.id === update.film.id);
 
   if (index === -1) {
     return items;
