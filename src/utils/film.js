@@ -72,3 +72,33 @@ export const getMostCommentedFilms = (films) => {
   const filmsSorted = films.slice().sort((filmFirst, filmSecond) => filmSecond.comments.length - filmFirst.comments.length);
   return filmsSorted.slice(0, FILMS_CARD_EXTRA_COUNT);
 };
+
+const getWeightForNullDate = (dateA, dateB) => {
+  if (dateA === null && dateB === null) {
+    return 0;
+  }
+
+  if (dateA === null) {
+    return 1;
+  }
+
+  if (dateB === null) {
+    return -1;
+  }
+
+  return null;
+};
+
+export const sortFilmDate = (filmA, filmB) => {
+  const weight = getWeightForNullDate(filmA.film.releaseDate, filmB.film.releaseDate);
+
+  if (weight !== null) {
+    return weight;
+  }
+
+  return dayjs(filmB.film.releaseDate).diff(dayjs(filmA.film.releaseDate));
+};
+
+export const sortFilmRating = (filmA, filmB) => {
+  return filmB.film.rating - filmA.film.rating;
+};

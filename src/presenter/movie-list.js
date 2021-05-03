@@ -5,11 +5,11 @@ import FilmsListEmptyView from '../view/films-list-empty';
 import FilmsListLoadingView from '../view/films-list-loading';
 import ShowMoreButtonView from '../view/show-more-button';
 import {remove, render, RenderPosition} from '../utils/render';
-import {FILMS_CARD_COUNT} from '../const';
+import {FILMS_CARD_COUNT, SortType} from '../const';
 import Movie from './movie';
 import {updateItem} from '../utils/common';
 import FilmsListExtraView from '../view/films-list-extra';
-import {getMostCommentedFilms, getTopRatedFilms} from '../utils/film';
+import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} from '../utils/film';
 
 export default class MovieList {
   constructor(boardContainer, popupContainer) {
@@ -21,6 +21,7 @@ export default class MovieList {
       topRated: {},
       mostCommented: {},
     };
+    this._currentSortType = SortType.DEFAULT;
 
     this._sortMenuComponent = new SortMenuView();
     this._filmsComponent = new FilmsView();
@@ -34,10 +35,12 @@ export default class MovieList {
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(boardFilms) {
     this._boardFilms = boardFilms.slice();
+    this._sourcedBoardFilms = boardFilms.slice();
 
     this._filmsListContainerElement = this._filmsListComponent.getElement().querySelector('.films-list__container');
     this._topRatedContainerElement = this._topRatedComponent.getElement().querySelector('.films-list__container');
@@ -46,8 +49,36 @@ export default class MovieList {
     this._renderBoard();
   }
 
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._boardFilms.sort(sortFilmDate);
+        break;
+      case SortType.RATING:
+        this._boardFilms.sort(sortFilmRating);
+        break;
+      default:
+        this._boardFilms = this._sourcedBoardFilms.slice();
+    }
+
+    this._currentSortType = sortType;
+  }
+
+  _handleSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderFilmsList();
+    this._renderTopRatedFilms();
+    this._renderMostCommentedFilms();
+  }
+
   _renderSort() {
     render(this._boardContainer, this._sortMenuComponent, RenderPosition.BEFOREEND);
+    this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderFilm(film, container, presenter) {
