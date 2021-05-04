@@ -1,4 +1,5 @@
 import {generateRandomDate, getRandom, getRandomArrayItem, getRandomArrayItems, getRandomInteger} from '../utils/common';
+import {nanoid} from 'nanoid';
 
 const FILM_DESCRIPTION_MIN_COUNT = 1;
 const FILM_DESCRIPTION_MAX_COUNT = 5;
@@ -203,6 +204,7 @@ export const generateFilm = () => {
   const title = generateTitle();
 
   return {
+    id: nanoid(),
     title: title,
     originalTitle: title,
     description: generateDescription(),
