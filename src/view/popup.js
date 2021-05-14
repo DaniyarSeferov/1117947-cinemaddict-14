@@ -106,8 +106,14 @@ export default class Popup extends Abstract {
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._emojiHandler = this._emojiHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._scrollHandler = this._scrollHandler.bind(this);
 
     this.restoreHandlers();
+  }
+
+  restoreScrollPosition() {
+    this.getElement().scrollTop = this._data.distanceToTop;
   }
 
   restoreHandlers() {
@@ -120,6 +126,13 @@ export default class Popup extends Abstract {
     [...inputEmojiElements].forEach((inputElement) => {
       inputElement.addEventListener('change', this._emojiHandler);
     });
+
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._commentInputHandler);
+
+    this.getElement()
+      .addEventListener('scroll', this._scrollHandler);
   }
 
   getTemplate() {
@@ -153,6 +166,7 @@ export default class Popup extends Abstract {
 
     parent.replaceChild(newElement, previousElement);
 
+    this.restoreScrollPosition();
     this.restoreHandlers();
   }
 
@@ -188,6 +202,20 @@ export default class Popup extends Abstract {
         emoji: evt.target.value,
       });
     }
+  }
+
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      commentDescription: evt.target.value,
+    }, true);
+  }
+
+  _scrollHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      distanceToTop: evt.target.scrollTop,
+    }, true);
   }
 
   setClosePopupClickHandler(callback) {
@@ -226,6 +254,7 @@ export default class Popup extends Abstract {
       {
         distanceToTop: 0,
         emoji: null,
+        commentDescription: '',
       },
     );
   }
@@ -235,6 +264,7 @@ export default class Popup extends Abstract {
 
     delete data.distanceToTop;
     delete data.emoji;
+    delete data.commentDescription;
 
     return data;
   }

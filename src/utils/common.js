@@ -57,7 +57,3 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
-
-export const getDistanceToTop = (element) => {
-  return window.pageYOffset + element.getBoundingClientRect().top;
-};
