@@ -2,8 +2,9 @@ import PopupComments from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
 import Abstract from './abstract';
 
-const createPopupTemplate = ({film, comments, statistic}) => {
-  const commentsElement = new PopupComments(comments).getTemplate();
+const createPopupTemplate = (data) => {
+  const {film, statistic} = data;
+  const commentsElement = new PopupComments(data).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
@@ -104,10 +105,44 @@ export default class Popup extends Abstract {
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._emojiHandler = this._emojiHandler.bind(this);
+
+    const inputEmojiElements = this.getElement().querySelectorAll('.film-details__emoji-item');
+    [...inputEmojiElements].forEach((inputElement) => {
+      inputElement.addEventListener('change', this._emojiHandler);
+    });
   }
 
   getTemplate() {
     return createPopupTemplate(this._data);
+  }
+
+  updateData(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    this._data = Object.assign(
+      {},
+      this._data,
+      update,
+    );
+
+    if (justDataUpdating) {
+      return;
+    }
+
+    this.updateElement();
+  }
+
+  updateElement() {
+    const previousElement = this.getElement();
+    const parent = previousElement.parentElement;
+    this.removeElement();
+
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, previousElement);
   }
 
   _closePopupClickHandler(evt) {
@@ -133,6 +168,15 @@ export default class Popup extends Abstract {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(Popup.parseStateToData(this._data));
+  }
+
+  _emojiHandler(evt) {
+    evt.preventDefault();
+    if (this._data.emoji !== evt.target.value) {
+      this.updateData({
+        emoji: evt.target.value,
+      });
+    }
   }
 
   setClosePopupClickHandler(callback) {
@@ -170,6 +214,7 @@ export default class Popup extends Abstract {
       data,
       {
         distanceToTop: 0,
+        emoji: null,
       },
     );
   }
@@ -178,6 +223,7 @@ export default class Popup extends Abstract {
     const data = Object.assign({}, state);
 
     delete data.distanceToTop;
+    delete data.emoji;
 
     return data;
   }
