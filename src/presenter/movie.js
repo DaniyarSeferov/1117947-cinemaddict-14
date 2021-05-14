@@ -22,6 +22,7 @@ export default class Movie {
     this._handleClosePopupClick = this._handleClosePopupClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleClick = this._handleClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
   init(film) {
@@ -37,6 +38,7 @@ export default class Movie {
     this._filmCardComponent.setFavoriteClickHandler(this._handleClick('favorite'));
     this._filmCardComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
     this._filmCardComponent.setWatchedClickHandler(this._handleClick('watched'));
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
 
     if (prevFilmCardComponent === null) {
       render(this._filmListContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
@@ -120,5 +122,9 @@ export default class Movie {
         ),
       );
     };
+  }
+
+  _handleFormSubmit(data) {
+    this._changeData(data);
   }
 }

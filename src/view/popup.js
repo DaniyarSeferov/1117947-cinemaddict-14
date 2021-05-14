@@ -98,11 +98,12 @@ const createPopupTemplate = ({film, comments, statistic}) => {
 export default class Popup extends Abstract {
   constructor(data) {
     super();
-    this._data = data;
+    this._data = Popup.parseDataToState(data);
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
@@ -129,6 +130,11 @@ export default class Popup extends Abstract {
     this._callback.watchedClick();
   }
 
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(Popup.parseStateToData(this._data));
+  }
+
   setClosePopupClickHandler(callback) {
     this._callback.closePopupClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closePopupClickHandler);
@@ -151,5 +157,28 @@ export default class Popup extends Abstract {
   setWatchedClickHandler(callback) {
     this._callback.watchedClick = callback;
     this.getElement().querySelector('#watched').addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  static parseDataToState(data) {
+    return Object.assign(
+      {},
+      data,
+      {
+        distanceToTop: 0,
+      },
+    );
+  }
+
+  static parseStateToData(state) {
+    const data = Object.assign({}, state);
+
+    delete data.distanceToTop;
+
+    return data;
   }
 }
