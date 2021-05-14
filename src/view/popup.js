@@ -107,6 +107,15 @@ export default class Popup extends Abstract {
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._emojiHandler = this._emojiHandler.bind(this);
 
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
     const inputEmojiElements = this.getElement().querySelectorAll('.film-details__emoji-item');
     [...inputEmojiElements].forEach((inputElement) => {
       inputElement.addEventListener('change', this._emojiHandler);
@@ -143,6 +152,8 @@ export default class Popup extends Abstract {
     const newElement = this.getElement();
 
     parent.replaceChild(newElement, previousElement);
+
+    this.restoreHandlers();
   }
 
   _closePopupClickHandler(evt) {
