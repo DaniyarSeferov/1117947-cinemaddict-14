@@ -1,9 +1,10 @@
 import PopupComments from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
-import Abstract from './abstract';
+import Smart from './smart';
 
-const createPopupTemplate = ({film, comments, statistic}) => {
-  const commentsElement = new PopupComments(comments).getTemplate();
+const createPopupTemplate = (data) => {
+  const {film, statistic} = data;
+  const commentsElement = new PopupComments(data).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
@@ -95,18 +96,78 @@ const createPopupTemplate = ({film, comments, statistic}) => {
 </section>`;
 };
 
-export default class Popup extends Abstract {
-  constructor(data) {
+export default class Popup extends Smart {
+  constructor(data, state = null) {
     super();
-    this._data = data;
+    this._data = Popup.parseDataToState(data, state);
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
     this._watchedClickHandler = this._watchedClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._emojiHandler = this._emojiHandler.bind(this);
+    this._commentInputHandler = this._commentInputHandler.bind(this);
+    this._scrollHandler = this._scrollHandler.bind(this);
+
+    this.restoreHandlers();
+  }
+
+  restoreScrollPosition() {
+    this.getElement().scrollTop = this._data.state.distanceToTop;
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setClosePopupClickHandler(this._callback.closePopupClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  _setInnerHandlers() {
+    const inputEmojiElements = this.getElement().querySelectorAll('.film-details__emoji-item');
+    [...inputEmojiElements].forEach((inputElement) => {
+      inputElement.addEventListener('change', this._emojiHandler);
+    });
+
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._commentInputHandler);
+
+    this.getElement()
+      .addEventListener('scroll', this._scrollHandler);
   }
 
   getTemplate() {
     return createPopupTemplate(this._data);
+  }
+
+  getState() {
+    return Object.assign(
+      {},
+      this._data.state,
+    );
+  }
+
+  updateState(update, justDataUpdating) {
+    if (!update) {
+      return;
+    }
+
+    const prevState = this.getState();
+    const state = Object.assign(
+      {},
+      prevState,
+      update,
+    );
+
+    this.updateData({state: state}, justDataUpdating);
+  }
+
+  updateElement() {
+    super.updateElement();
+    this.restoreScrollPosition();
   }
 
   _closePopupClickHandler(evt) {
@@ -127,6 +188,49 @@ export default class Popup extends Abstract {
   _watchedClickHandler(evt) {
     evt.preventDefault();
     this._callback.watchedClick();
+  }
+
+  _addComment(emotion, text) {
+    if (emotion && text.length) {
+      this._data.comments.push({
+        emotion,
+        text,
+        date: new Date(),
+      });
+    }
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._addComment(this._data.state.emoji, this._data.state.commentDescription);
+    this.updateState({
+      emoji: null,
+      commentDescription: '',
+    });
+    this._callback.formSubmit(Popup.parseStateToData(this._data));
+  }
+
+  _emojiHandler(evt) {
+    evt.preventDefault();
+    if (this._data.state.emoji !== evt.target.value) {
+      this.updateState({
+        emoji: evt.target.value,
+      });
+    }
+  }
+
+  _commentInputHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      commentDescription: evt.target.value,
+    }, true);
+  }
+
+  _scrollHandler(evt) {
+    evt.preventDefault();
+    this.updateState({
+      distanceToTop: evt.target.scrollTop,
+    }, true);
   }
 
   setClosePopupClickHandler(callback) {
@@ -151,5 +255,39 @@ export default class Popup extends Abstract {
   setWatchedClickHandler(callback) {
     this._callback.watchedClick = callback;
     this.getElement().querySelector('#watched').addEventListener('click', this._watchedClickHandler);
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  static parseDataToState(data, state = null) {
+    const defaultState = {
+      distanceToTop: 0,
+      emoji: null,
+      commentDescription: '',
+    };
+
+    const currentState = state ? state : defaultState;
+
+    return Object.assign(
+      {},
+      data,
+      {
+        state: Object.assign(
+          {},
+          currentState,
+        ),
+      },
+    );
+  }
+
+  static parseStateToData(state) {
+    const data = Object.assign({}, state);
+
+    delete data.state;
+
+    return data;
   }
 }
