@@ -1,6 +1,6 @@
 import PopupComments from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
-import Abstract from './abstract';
+import Smart from './smart';
 
 const createPopupTemplate = (data) => {
   const {film, statistic} = data;
@@ -96,7 +96,7 @@ const createPopupTemplate = (data) => {
 </section>`;
 };
 
-export default class Popup extends Abstract {
+export default class Popup extends Smart {
   constructor(data, state = null) {
     super();
     this._data = Popup.parseDataToState(data, state);
@@ -150,40 +150,24 @@ export default class Popup extends Abstract {
     );
   }
 
-  updateData(update, justDataUpdating) {
+  updateState(update, justDataUpdating) {
     if (!update) {
       return;
     }
 
-    this._data = Object.assign(
+    const prevState = this.getState();
+    const state = Object.assign(
       {},
-      this._data,
-      {
-        state: Object.assign(
-          this._data.state,
-          update,
-        ),
-      },
+      prevState,
+      update,
     );
 
-    if (justDataUpdating) {
-      return;
-    }
-
-    this.updateElement();
+    this.updateData({state: state}, justDataUpdating);
   }
 
   updateElement() {
-    const previousElement = this.getElement();
-    const parent = previousElement.parentElement;
-    this.removeElement();
-
-    const newElement = this.getElement();
-
-    parent.replaceChild(newElement, previousElement);
-
+    super.updateElement();
     this.restoreScrollPosition();
-    this.restoreHandlers();
   }
 
   _closePopupClickHandler(evt) {
@@ -214,7 +198,7 @@ export default class Popup extends Abstract {
   _emojiHandler(evt) {
     evt.preventDefault();
     if (this._data.state.emoji !== evt.target.value) {
-      this.updateData({
+      this.updateState({
         emoji: evt.target.value,
       });
     }
@@ -222,14 +206,14 @@ export default class Popup extends Abstract {
 
   _commentInputHandler(evt) {
     evt.preventDefault();
-    this.updateData({
+    this.updateState({
       commentDescription: evt.target.value,
     }, true);
   }
 
   _scrollHandler(evt) {
     evt.preventDefault();
-    this.updateData({
+    this.updateState({
       distanceToTop: evt.target.scrollTop,
     }, true);
   }
