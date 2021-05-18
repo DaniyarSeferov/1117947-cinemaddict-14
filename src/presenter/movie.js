@@ -30,9 +30,10 @@ export default class Movie {
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevPopupComponent = this._popupComponent;
+    const prevState = prevPopupComponent ? prevPopupComponent.getState() : null;
 
     this._filmCardComponent = new FilmCardView(this._film);
-    this._popupComponent = new PopupView(this._film);
+    this._popupComponent = new PopupView(this._film, prevState);
 
     this._filmCardComponent.setOpenPopupClickHandler(this._handleOpenPopupClick);
     this._filmCardComponent.setFavoriteClickHandler(this._handleClick('favorite'));
@@ -69,6 +70,7 @@ export default class Movie {
   _showPopup() {
     this._popupContainer.classList.add('hide-overflow');
     render(this._popupContainer, this._popupComponent, RenderPosition.BEFOREEND);
+    this._popupComponent.restoreScrollPosition();
     this._popupComponent.setClosePopupClickHandler(this._handleClosePopupClick);
     this._popupComponent.setFavoriteClickHandler(this._handleClick('favorite'));
     this._popupComponent.setWatchlistClickHandler(this._handleClick('watchlist'));

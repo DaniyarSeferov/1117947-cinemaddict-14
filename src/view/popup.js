@@ -97,9 +97,9 @@ const createPopupTemplate = (data) => {
 };
 
 export default class Popup extends Abstract {
-  constructor(data) {
+  constructor(data, state = null) {
     super();
-    this._data = Popup.parseDataToState(data);
+    this._data = Popup.parseDataToState(data, state);
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -113,11 +113,15 @@ export default class Popup extends Abstract {
   }
 
   restoreScrollPosition() {
-    this.getElement().scrollTop = this._data.distanceToTop;
+    this.getElement().scrollTop = this._data.state.distanceToTop;
   }
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this.setClosePopupClickHandler(this._callback.closePopupClick);
+    this.setFavoriteClickHandler(this._callback.favoriteClick);
+    this.setWatchlistClickHandler(this._callback.watchlistClick);
+    this.setWatchedClickHandler(this._callback.watchedClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -139,6 +143,13 @@ export default class Popup extends Abstract {
     return createPopupTemplate(this._data);
   }
 
+  getState() {
+    return Object.assign(
+      {},
+      this._data.state,
+    );
+  }
+
   updateData(update, justDataUpdating) {
     if (!update) {
       return;
@@ -147,7 +158,12 @@ export default class Popup extends Abstract {
     this._data = Object.assign(
       {},
       this._data,
-      update,
+      {
+        state: Object.assign(
+          this._data.state,
+          update,
+        ),
+      },
     );
 
     if (justDataUpdating) {
@@ -197,7 +213,7 @@ export default class Popup extends Abstract {
 
   _emojiHandler(evt) {
     evt.preventDefault();
-    if (this._data.emoji !== evt.target.value) {
+    if (this._data.state.emoji !== evt.target.value) {
       this.updateData({
         emoji: evt.target.value,
       });
@@ -247,14 +263,23 @@ export default class Popup extends Abstract {
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
   }
 
-  static parseDataToState(data) {
+  static parseDataToState(data, state = null) {
+    const defaultState = {
+      distanceToTop: 0,
+      emoji: null,
+      commentDescription: '',
+    };
+
+    const currentState = state ? state : defaultState;
+
     return Object.assign(
       {},
       data,
       {
-        distanceToTop: 0,
-        emoji: null,
-        commentDescription: '',
+        state: Object.assign(
+          {},
+          currentState,
+        ),
       },
     );
   }
@@ -262,9 +287,7 @@ export default class Popup extends Abstract {
   static parseStateToData(state) {
     const data = Object.assign({}, state);
 
-    delete data.distanceToTop;
-    delete data.emoji;
-    delete data.commentDescription;
+    delete data.state;
 
     return data;
   }
