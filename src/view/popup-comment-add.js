@@ -8,7 +8,7 @@ const createPopupCommentAddTemplate = (data) => {
     <div class="film-details__add-emoji-label">${emojiImage}</div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">${commentDescription}</textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${emoji ? '' : 'disabled'}>${commentDescription}</textarea>
     </label>
 
     <div class="film-details__emoji-list">
