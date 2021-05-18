@@ -190,8 +190,23 @@ export default class Popup extends Smart {
     this._callback.watchedClick();
   }
 
+  _addComment(emotion, text) {
+    if (emotion && text.length) {
+      this._data.comments.push({
+        emotion,
+        text,
+        date: new Date(),
+      });
+    }
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
+    this._addComment(this._data.state.emoji, this._data.state.commentDescription);
+    this.updateState({
+      emoji: null,
+      commentDescription: '',
+    });
     this._callback.formSubmit(Popup.parseStateToData(this._data));
   }
 
