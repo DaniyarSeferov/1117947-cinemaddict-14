@@ -14,3 +14,13 @@ export const SortType = {
   DATE: 'date',
   RATING: 'rating',
 };
+
+export const UserAction = {
+  UPDATE_MOVIE: 'UPDATE_MOVIE',
+};
+
+export const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
+};

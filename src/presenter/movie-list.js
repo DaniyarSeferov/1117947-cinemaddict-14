@@ -32,10 +32,13 @@ export default class MovieList {
     this._topRatedComponent = new FilmsListExtraView('Top rated');
     this._mostCommentedComponent = new FilmsListExtraView('Most commented');
 
-    this._handleFilmChange = this._handleFilmChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._moviesModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -75,7 +78,7 @@ export default class MovieList {
   }
 
   _renderFilm(film, container, presenter) {
-    const filmPresenter = new Movie(container, this._popupContainer, this._handleFilmChange, this._handleModeChange);
+    const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange);
     filmPresenter.init(film);
     presenter[film.film.id] = filmPresenter;
   }
@@ -171,13 +174,20 @@ export default class MovieList {
     remove(this._showMoreButtonComponent);
   }
 
-  _handleFilmChange(updatedFilm) {
-    //Model update
-    Object.values(this._Presenter).forEach((presenters) => {
-      if (Object.prototype.hasOwnProperty.call(presenters, updatedFilm.film.id)) {
-        presenters[updatedFilm.film.id].init(updatedFilm);
-      }
-    });
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание)
+    // - обновить список (например, когда задача ушла в архив)
+    // - обновить всю доску (например, при переключении фильтра)
   }
 
   _handleShowMoreButtonClick() {

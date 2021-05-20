@@ -1,6 +1,7 @@
 import FilmCardView from '../view/film-card';
 import PopupView from '../view/popup';
 import {remove, render, RenderPosition, replace} from '../utils/render';
+import {UserAction, UpdateType} from '../const.js';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -109,6 +110,8 @@ export default class Movie {
   _handleClick(changeKey) {
     return () => {
       this._changeData(
+        UserAction.UPDATE_MOVIE,
+        UpdateType.MINOR,
         Object.assign(
           {},
           this._film,
@@ -127,6 +130,10 @@ export default class Movie {
   }
 
   _handleFormSubmit(data) {
-    this._changeData(data);
+    this._changeData(
+      UserAction.UPDATE_MOVIE,
+      UpdateType.MINOR,
+      data,
+    );
   }
 }
