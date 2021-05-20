@@ -9,6 +9,7 @@ import {generateFilter} from './mock/filter';
 import {render, RenderPosition} from './utils/render';
 import {getUserRank} from './utils/film';
 import MovieListPresenter from './presenter/movie-list';
+import Movies from './model/movies';
 
 const FILMS_COUNT = 20;
 
@@ -21,6 +22,9 @@ const filters = generateFilter(data);
 const userStatistic = generateUserStatistic(data);
 const userRank = getUserRank(userStatistic.watched.count);
 
+const moviesModel = new Movies();
+moviesModel.setMovies(data);
+
 const bodyElement = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
 const siteHeaderElement = document.querySelector('.header');
@@ -29,7 +33,7 @@ const siteFooterElement = document.querySelector('.footer');
 render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
 render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 
-const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement);
+const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel);
 movieListPresenter.init(data);
 
 render(siteFooterElement, new FooterStatisticsView(FILMS_COUNT), RenderPosition.BEFOREEND);

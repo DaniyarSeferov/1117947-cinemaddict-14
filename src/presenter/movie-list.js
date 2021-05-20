@@ -12,9 +12,10 @@ import FilmsListExtraView from '../view/films-list-extra';
 import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} from '../utils/film';
 
 export default class MovieList {
-  constructor(boardContainer, popupContainer) {
+  constructor(boardContainer, popupContainer, moviesModel) {
     this._boardContainer = boardContainer;
     this._popupContainer = popupContainer;
+    this._moviesModel = moviesModel;
     this._renderedFilmsCount = FILMS_CARD_COUNT;
     this._Presenter = {
       main: {},
@@ -47,6 +48,10 @@ export default class MovieList {
     this._mostCommentedContainerElement = this._mostCommentedComponent.getElement().querySelector('.films-list__container');
 
     this._renderBoard();
+  }
+
+  _getMovies() {
+    return this._moviesModel.getMovies();
   }
 
   _sortFilms(sortType) {
