@@ -34,7 +34,7 @@ render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEN
 render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
 
 const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel);
-movieListPresenter.init(data);
+movieListPresenter.init();
 
 render(siteFooterElement, new FooterStatisticsView(FILMS_COUNT), RenderPosition.BEFOREEND);
 render(siteMainElement, new StatisticView(userStatistic), RenderPosition.BEFOREEND);
