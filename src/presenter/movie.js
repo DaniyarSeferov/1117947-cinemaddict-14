@@ -132,7 +132,7 @@ export default class Movie {
   _handleFormSubmit(data) {
     this._changeData(
       UserAction.UPDATE_MOVIE,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       data,
     );
   }

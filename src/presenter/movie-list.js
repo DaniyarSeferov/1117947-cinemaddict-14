@@ -5,7 +5,7 @@ import FilmsListEmptyView from '../view/films-list-empty';
 import FilmsListLoadingView from '../view/films-list-loading';
 import ShowMoreButtonView from '../view/show-more-button';
 import {remove, render, RenderPosition} from '../utils/render';
-import {FILMS_CARD_COUNT, SortType} from '../const';
+import {FILMS_CARD_COUNT, SortType, UpdateType, UserAction} from '../const';
 import Movie from './movie';
 import FilmsListExtraView from '../view/films-list-extra';
 import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} from '../utils/film';
@@ -175,19 +175,29 @@ export default class MovieList {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
-    // Здесь будем вызывать обновление модели.
-    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
-    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
-    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_MOVIE:
+        this._moviesModel.updateMovie(updateType, update);
+        break;
+    }
   }
 
   _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        Object.values(this._Presenter).forEach((presenter) => {
+          if (presenter[data.film.id]) {
+            presenter[data.film.id].init(data);
+          }
+        });
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда фильм добавлен в просмотренные)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
   }
 
   _handleShowMoreButtonClick() {
