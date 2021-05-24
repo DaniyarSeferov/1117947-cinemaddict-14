@@ -23,12 +23,13 @@ export default class MovieList {
     };
     this._currentSortType = SortType.DEFAULT;
 
-    this._sortMenuComponent = new SortMenuView();
+    this._sortMenuComponent = null;
+    this._showMoreButtonComponent = null;
+
     this._filmsComponent = new FilmsView();
     this._filmsListComponent = new FilmsListView();
     this._filmsListEmptyComponent = new FilmsListEmptyView();
     this._filmsListLoadingComponent = new FilmsListLoadingView();
-    this._showMoreButtonComponent = new ShowMoreButtonView();
     this._topRatedComponent = new FilmsListExtraView('Top rated');
     this._mostCommentedComponent = new FilmsListExtraView('Most commented');
 
@@ -46,7 +47,7 @@ export default class MovieList {
     this._topRatedContainerElement = this._topRatedComponent.getElement().querySelector('.films-list__container');
     this._mostCommentedContainerElement = this._mostCommentedComponent.getElement().querySelector('.films-list__container');
 
-    this._renderBoard();
+    this._renderMovieList();
   }
 
   _getMovies() {
@@ -66,15 +67,23 @@ export default class MovieList {
     }
 
     this._currentSortType = sortType;
-    this._clearFilmList();
+    this._clearMovieList();
+
+    this._renderSort();
     this._renderFilmsList();
     this._renderTopRatedFilms();
     this._renderMostCommentedFilms();
   }
 
   _renderSort() {
-    render(this._boardContainer, this._sortMenuComponent, RenderPosition.BEFOREEND);
+    if (this._sortMenuComponent !== null) {
+      this._sortMenuComponent = null;
+    }
+
+    this._sortMenuComponent = new SortMenuView(this._currentSortType);
     this._sortMenuComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+
+    render(this._filmsComponent, this._sortMenuComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderFilm(film, container, presenter) {
@@ -115,9 +124,14 @@ export default class MovieList {
   }
 
   _renderShowMoreButton() {
-    render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
+    if (this._showMoreButtonComponent !== null) {
+      this._showMoreButtonComponent = null;
+    }
 
+    this._showMoreButtonComponent = new ShowMoreButtonView();
     this._showMoreButtonComponent.setClickHandler(this._handleShowMoreButtonClick);
+
+    render(this._filmsListComponent, this._showMoreButtonComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTopRatedFilmsContainer() {
@@ -140,7 +154,7 @@ export default class MovieList {
       .forEach((film) => this._renderFilm(film, this._mostCommentedContainerElement, this._Presenter.mostCommented));
   }
 
-  _renderBoard() {
+  _renderMovieList() {
     if (!this._getMovies().length) {
       this._renderFilmsMainContainer();
       this._renderNoFilms();
@@ -158,7 +172,9 @@ export default class MovieList {
     this._renderMostCommentedFilms();
   }
 
-  _clearFilmList() {
+  _clearMovieList({resetRenderedMovieCount = false, resetSortType = false} = {}) {
+    const movieCount = this._getMovies().length;
+
     Object.values(this._Presenter).forEach((presenters) => {
       Object
         .values(presenters)
@@ -170,8 +186,20 @@ export default class MovieList {
       topRated: {},
       mostCommented: {},
     };
-    this._renderedMoviesCount = FILMS_CARD_COUNT;
+
+    remove(this._sortMenuComponent);
+    remove(this._filmsListEmptyComponent);
     remove(this._showMoreButtonComponent);
+
+    if (resetRenderedMovieCount) {
+      this._renderedMoviesCount = FILMS_CARD_COUNT;
+    } else {
+      this._renderedMoviesCount = Math.min(movieCount, this._renderedMoviesCount);
+    }
+
+    if (resetSortType) {
+      this._currentSortType = SortType.DEFAULT;
+    }
   }
 
   _handleViewAction(actionType, updateType, update) {
@@ -192,10 +220,12 @@ export default class MovieList {
         });
         break;
       case UpdateType.MINOR:
-        // - обновить список (например, когда фильм добавлен в просмотренные)
+        this._clearMovieList();
+        this._renderMovieList();
         break;
       case UpdateType.MAJOR:
-        // - обновить всю доску (например, при переключении фильтра)
+        this._clearMovieList({resetRenderedTaskCount: true, resetSortType: true});
+        this._renderMovieList();
         break;
     }
   }
