@@ -5,7 +5,6 @@ import StatisticView from './view/statistic';
 import {generateFilm} from './mock/film';
 import {generateComments} from './mock/comment';
 import {generateStatistic, generateUserStatistic} from './mock/statistic';
-import {generateFilter} from './mock/filter';
 import {render, RenderPosition} from './utils/render';
 import {getUserRank} from './utils/film';
 import MovieListPresenter from './presenter/movie-list';
@@ -19,7 +18,12 @@ const data = new Array(FILMS_COUNT).fill(null).map(() => ({
   comments: generateComments(),
   statistic: generateStatistic(),
 }));
-const filters = generateFilter(data);
+
+const filters = [{
+  type: 'all',
+  title: 'ALL',
+  count: 0,
+}];
 const userStatistic = generateUserStatistic(data);
 const userRank = getUserRank(userStatistic.watched.count);
 
@@ -34,7 +38,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 
 render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
-render(siteMainElement, new SiteMenuView(filters), RenderPosition.BEFOREEND);
+render(siteMainElement, new SiteMenuView(filters, 'all'), RenderPosition.BEFOREEND);
 
 const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel);
 movieListPresenter.init();
