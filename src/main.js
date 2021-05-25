@@ -10,6 +10,7 @@ import {render, RenderPosition} from './utils/render';
 import {getUserRank} from './utils/film';
 import MovieListPresenter from './presenter/movie-list';
 import Movies from './model/movies';
+import FilterModel from './model/filter';
 
 const FILMS_COUNT = 20;
 
@@ -24,6 +25,8 @@ const userRank = getUserRank(userStatistic.watched.count);
 
 const moviesModel = new Movies();
 moviesModel.setMovies(data);
+
+const filterModel = new FilterModel();
 
 const bodyElement = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
