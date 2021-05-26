@@ -1,7 +1,7 @@
 import FilmCardView from '../view/film-card';
 import PopupView from '../view/popup';
 import {remove, render, RenderPosition, replace} from '../utils/render';
-import {UserAction, UpdateType} from '../const.js';
+import {UserAction, UpdateType} from '../const';
 
 const Mode = {
   DEFAULT: 'DEFAULT',

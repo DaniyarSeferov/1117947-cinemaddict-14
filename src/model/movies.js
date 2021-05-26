@@ -1,4 +1,4 @@
-import Observer from '../utils/observer.js';
+import Observer from '../utils/observer';
 
 export default class Movies extends Observer {
   constructor() {
