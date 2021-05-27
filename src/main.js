@@ -1,7 +1,7 @@
 import UserProfileView from './view/user-profile';
 import FooterStatisticsView from './view/footer-statistics';
 import StatisticView from './view/statistic';
-import {generateFilm} from './mock/film';
+import {generateCommentIds, generateFilm} from './mock/film';
 import {generateComments} from './mock/comment';
 import {generateStatistic, generateUserStatistic} from './mock/statistic';
 import {render, RenderPosition} from './utils/render';
@@ -13,9 +13,10 @@ import FilterModel from './model/filter';
 
 const FILMS_COUNT = 20;
 
+const comments = generateComments();
 const data = new Array(FILMS_COUNT).fill(null).map(() => ({
   film: generateFilm(),
-  comments: generateComments(),
+  comments: generateCommentIds(comments),
   statistic: generateStatistic(),
 }));
 

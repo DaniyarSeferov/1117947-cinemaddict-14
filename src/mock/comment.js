@@ -1,9 +1,9 @@
-import {generateRandomDate, getRandomArrayItem, getRandomInteger} from '../utils/common';
+import {generateRandomDate, getRandomArrayItem} from '../utils/common';
+import {nanoid} from 'nanoid';
 
 const COMMENT_YEAR_MIN = 1990;
 const COMMENT_YEAR_MAX = 2021;
-const COMMENTS_MIN_COUNT = 0;
-const COMMENTS_MAX_COUNT = 5;
+const COMMENTS_COUNT = 20;
 
 const generateEmotion = () => {
   const emotions = [
@@ -41,6 +41,7 @@ const generateCommentText = () => {
 
 export const generateComment = () => {
   return {
+    id: nanoid(),
     emotion: generateEmotion(),
     date: generateRandomDate(COMMENT_YEAR_MIN, COMMENT_YEAR_MAX),
     author: generateAuthor(),
@@ -49,6 +50,5 @@ export const generateComment = () => {
 };
 
 export const generateComments = () => {
-  const randomIndex = getRandomInteger(COMMENTS_MIN_COUNT, COMMENTS_MAX_COUNT);
-  return new Array(randomIndex).fill(null).map(generateComment);
+  return new Array(COMMENTS_COUNT).fill(null).map(generateComment);
 };
