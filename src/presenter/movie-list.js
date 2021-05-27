@@ -9,12 +9,14 @@ import {FILMS_CARD_COUNT, SortType, UpdateType, UserAction} from '../const';
 import Movie from './movie';
 import FilmsListExtraView from '../view/films-list-extra';
 import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} from '../utils/film';
+import {filter} from '../utils/filter';
 
 export default class MovieList {
-  constructor(boardContainer, popupContainer, moviesModel) {
+  constructor(boardContainer, popupContainer, moviesModel, filterModel) {
     this._boardContainer = boardContainer;
     this._popupContainer = popupContainer;
     this._moviesModel = moviesModel;
+    this._filterModel = filterModel;
     this._renderedMoviesCount = FILMS_CARD_COUNT;
     this._Presenter = {
       main: {},
@@ -40,6 +42,7 @@ export default class MovieList {
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
 
     this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -51,14 +54,18 @@ export default class MovieList {
   }
 
   _getMovies() {
+    const filterType = this._filterModel.getFilter();
+    const movies = this._moviesModel.getMovies();
+    const filteredMovies = filter[filterType](movies);
+
     switch (this._currentSortType) {
       case SortType.DATE:
-        return this._moviesModel.getMovies().slice().sort(sortFilmDate);
+        return filteredMovies.sort(sortFilmDate);
       case SortType.RATING:
-        return this._moviesModel.getMovies().slice().sort(sortFilmRating);
+        return filteredMovies.sort(sortFilmRating);
     }
 
-    return this._moviesModel.getMovies();
+    return filteredMovies;
   }
 
   _handleSortTypeChange(sortType) {
@@ -224,7 +231,7 @@ export default class MovieList {
         this._renderMovieList();
         break;
       case UpdateType.MAJOR:
-        this._clearMovieList({resetRenderedTaskCount: true, resetSortType: true});
+        this._clearMovieList({resetRenderedMovieCount: true, resetSortType: true});
         this._renderMovieList();
         break;
     }

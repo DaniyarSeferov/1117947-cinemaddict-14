@@ -35,7 +35,7 @@ const siteFooterElement = document.querySelector('.footer');
 render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
 
 const filterPresenter = new FilterPresenter(siteMainElement, filterModel, moviesModel);
-const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel);
+const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel, filterModel);
 
 filterPresenter.init();
 movieListPresenter.init();
