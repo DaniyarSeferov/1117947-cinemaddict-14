@@ -1,7 +1,7 @@
 import Abstract from './abstract';
 
 const createPopupCommentAddTemplate = (data) => {
-  const {emoji, commentDescription} = data.state;
+  const {emoji, commentDescription} = data;
   const emojiImage = emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : '';
 
   return `<div class="film-details__new-comment">

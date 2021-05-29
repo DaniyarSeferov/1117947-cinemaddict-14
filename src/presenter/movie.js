@@ -26,15 +26,16 @@ export default class Movie {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
   }
 
-  init(film) {
+  init(film, comments) {
     this._film = film;
+    this._comments = comments;
 
     const prevFilmCardComponent = this._filmCardComponent;
     const prevPopupComponent = this._popupComponent;
     const prevState = prevPopupComponent ? prevPopupComponent.getState() : null;
 
     this._filmCardComponent = new FilmCardView(this._film);
-    this._popupComponent = new PopupView(this._film, prevState);
+    this._popupComponent = new PopupView(this._film, this._comments, prevState);
 
     this._filmCardComponent.setOpenPopupClickHandler(this._handleOpenPopupClick);
     this._filmCardComponent.setFavoriteClickHandler(this._handleClick('favorite'));

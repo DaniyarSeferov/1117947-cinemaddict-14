@@ -2,9 +2,9 @@ import PopupComments from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
 import Smart from './smart';
 
-const createPopupTemplate = (data) => {
-  const {film, statistic} = data;
-  const commentsElement = new PopupComments(data).getTemplate();
+const createPopupTemplate = (data, comments) => {
+  const {film, statistic, state} = data;
+  const commentsElement = new PopupComments(comments, state).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
@@ -97,9 +97,10 @@ const createPopupTemplate = (data) => {
 };
 
 export default class Popup extends Smart {
-  constructor(data, state = null) {
+  constructor(data, comments, state = null) {
     super();
     this._data = Popup.parseDataToState(data, state);
+    this._comments = comments;
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -140,7 +141,7 @@ export default class Popup extends Smart {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data);
+    return createPopupTemplate(this._data, this._comments);
   }
 
   getState() {

@@ -12,11 +12,12 @@ import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} f
 import {filter} from '../utils/filter';
 
 export default class MovieList {
-  constructor(boardContainer, popupContainer, moviesModel, filterModel) {
+  constructor(boardContainer, popupContainer, moviesModel, filterModel, commentsModel) {
     this._boardContainer = boardContainer;
     this._popupContainer = popupContainer;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
+    this._commentsModel = commentsModel;
     this._renderedMoviesCount = FILMS_CARD_COUNT;
     this._Presenter = {
       main: {},
@@ -68,6 +69,11 @@ export default class MovieList {
     return filteredMovies;
   }
 
+  _getComments(commentIds) {
+    return this._commentsModel.getComments()
+      .filter((comment) => commentIds.includes(comment.id));
+  }
+
   _handleSortTypeChange(sortType) {
     if (this._currentSortType === sortType) {
       return;
@@ -95,7 +101,8 @@ export default class MovieList {
 
   _renderFilm(film, container, presenter) {
     const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange);
-    filmPresenter.init(film);
+    const comments = this._getComments(film.comments);
+    filmPresenter.init(film, comments);
     presenter[film.film.id] = filmPresenter;
   }
 
@@ -222,7 +229,8 @@ export default class MovieList {
       case UpdateType.PATCH:
         Object.values(this._Presenter).forEach((presenter) => {
           if (presenter[data.film.id]) {
-            presenter[data.film.id].init(data);
+            const comments = this._getComments(data.comments);
+            presenter[data.film.id].init(data, comments);
           }
         });
         break;
