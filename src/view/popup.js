@@ -119,11 +119,14 @@ export default class Popup extends Smart {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setClosePopupClickHandler(this._callback.closePopupClick);
-    this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setWatchlistClickHandler(this._callback.watchlistClick);
-    this.setWatchedClickHandler(this._callback.watchedClick);
-    this.setFormSubmitHandler(this._callback.formSubmit);
+
+    if (Object.keys(this._callback).length) {
+      this.setClosePopupClickHandler(this._callback.closePopupClick);
+      this.setFavoriteClickHandler(this._callback.favoriteClick);
+      this.setWatchlistClickHandler(this._callback.watchlistClick);
+      this.setWatchedClickHandler(this._callback.watchedClick);
+      this.setFormSubmitHandler(this._callback.formSubmit);
+    }
   }
 
   _setInnerHandlers() {
@@ -191,24 +194,28 @@ export default class Popup extends Smart {
     this._callback.watchedClick();
   }
 
-  _addComment(emotion, text) {
+  _createComment(emotion, text) {
+    let comment = null;
     if (emotion && text.length) {
-      this._data.comments.push({
+      comment = {
         emotion,
         text,
-        date: new Date(),
-      });
+      };
     }
+    return comment;
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._addComment(this._data.state.emoji, this._data.state.commentDescription);
+    const comment = this._createComment(this._data.state.emoji, this._data.state.commentDescription);
     this.updateState({
       emoji: null,
       commentDescription: '',
     });
-    this._callback.formSubmit(Popup.parseStateToData(this._data));
+
+    if (comment) {
+      this._callback.formSubmit({comment, movie: Popup.parseStateToData(this._data)});
+    }
   }
 
   _emojiHandler(evt) {

@@ -17,6 +17,7 @@ export const SortType = {
 
 export const UserAction = {
   UPDATE_MOVIE: 'UPDATE_MOVIE',
+  ADD_COMMENT: 'ADD_COMMENT',
 };
 
 export const UpdateType = {

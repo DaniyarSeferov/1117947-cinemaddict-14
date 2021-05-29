@@ -221,6 +221,10 @@ export default class MovieList {
       case UserAction.UPDATE_MOVIE:
         this._moviesModel.updateMovie(updateType, update);
         break;
+      case UserAction.ADD_COMMENT:
+        this._commentsModel.addComment(updateType, update.comment);
+        this._moviesModel.updateMovie(updateType, update.movie);
+        break;
     }
   }
 

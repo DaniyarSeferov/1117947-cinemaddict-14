@@ -2,6 +2,7 @@ import FilmCardView from '../view/film-card';
 import PopupView from '../view/popup';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import {UserAction, UpdateType} from '../const';
+import {nanoid} from 'nanoid';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -77,6 +78,7 @@ export default class Movie {
     this._popupComponent.setFavoriteClickHandler(this._handleClick('favorite'));
     this._popupComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
     this._popupComponent.setWatchedClickHandler(this._handleClick('watched'));
+    this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._mode = Mode.POPUP;
   }
 
@@ -95,17 +97,20 @@ export default class Movie {
       evt.preventDefault();
       this._hidePopup();
       document.removeEventListener('keydown', this._escKeyDownHandler);
+      remove(this._popupComponent);
     }
   }
 
   _handleOpenPopupClick() {
     this._changeMode();
+    this._popupComponent = new PopupView(this._film, this._comments);
     this._showPopup();
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _handleClosePopupClick() {
     this._hidePopup();
+    remove(this._popupComponent);
   }
 
   _handleClick(changeKey) {
@@ -131,10 +136,19 @@ export default class Movie {
   }
 
   _handleFormSubmit(data) {
+    const commentId = nanoid();
+    data.movie.comments.push(commentId);
+
     this._changeData(
-      UserAction.UPDATE_MOVIE,
+      UserAction.ADD_COMMENT,
       UpdateType.PATCH,
-      data,
+      Object.assign(
+        {},
+        data,
+        {
+          comment: Object.assign({id: commentId, date: new Date()}, data.comment),
+        },
+      ),
     );
   }
 }
