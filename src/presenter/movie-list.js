@@ -18,7 +18,7 @@ export default class MovieList {
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
     this._commentsModel = commentsModel;
-    this._renderedMoviesCount = FILMS_CARD_COUNT;
+
     this._Presenter = {
       main: {},
       topRated: {},
@@ -41,17 +41,31 @@ export default class MovieList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
-
-    this._moviesModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
+    this._renderedMoviesCount = FILMS_CARD_COUNT;
+
     this._filmsListContainerElement = this._filmsListComponent.getElement().querySelector('.films-list__container');
     this._topRatedContainerElement = this._topRatedComponent.getElement().querySelector('.films-list__container');
     this._mostCommentedContainerElement = this._mostCommentedComponent.getElement().querySelector('.films-list__container');
 
+    this._moviesModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
+
     this._renderMovieList();
+  }
+
+  destroy() {
+    this._clearMovieList({resetRenderedTaskCount: true, resetSortType: true});
+
+    remove(this._filmsListComponent);
+    remove(this._topRatedComponent);
+    remove(this._mostCommentedComponent);
+    remove(this._filmsComponent);
+
+    this._moviesModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
   }
 
   _getMovies() {

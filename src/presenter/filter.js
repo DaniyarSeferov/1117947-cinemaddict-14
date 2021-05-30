@@ -1,4 +1,4 @@
-import SiteMenuView from '../view/site-menu';
+import FilterView from '../view/filter';
 import {render, RenderPosition, replace, remove} from '../utils/render';
 import {filter} from '../utils/filter';
 import {FilterType, UpdateType} from '../const';
@@ -22,11 +22,11 @@ export default class Filter {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
-    this._filterComponent = new SiteMenuView(filters, this._filterModel.getFilter());
+    this._filterComponent = new FilterView(filters, this._filterModel.getFilter());
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
+      render(this._filterContainer, this._filterComponent, RenderPosition.AFTERBEGIN);
       return;
     }
 
@@ -39,10 +39,6 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
-    if (this._filterModel.getFilter() === filterType) {
-      return;
-    }
-
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
 
@@ -52,7 +48,7 @@ export default class Filter {
     return [
       {
         type: FilterType.ALL,
-        name: 'All',
+        name: 'All movies',
       },
       {
         type: FilterType.WATCHLIST,

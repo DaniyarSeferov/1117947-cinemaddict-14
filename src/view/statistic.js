@@ -4,8 +4,10 @@ import StatisticList from './statistic-list';
 import StatisticItem from './statistic-item';
 import {getUserRank} from '../utils/film';
 import Abstract from './abstract';
+import {generateUserStatistic} from '../mock/statistic';
 
-const createStatisticTemplate = (userStatistic) => {
+const createStatisticTemplate = (movies) => {
+  const userStatistic = generateUserStatistic(movies);
   const userRank = getUserRank(userStatistic.watched.count);
   const statisticItems = Object.entries(userStatistic).map(([name, data]) => new StatisticItem(name, data).getTemplate());
   const statisticRank = new StatisticRank(userRank).getTemplate();
@@ -27,12 +29,12 @@ const createStatisticTemplate = (userStatistic) => {
 };
 
 export default class Statistic extends Abstract {
-  constructor(userStatistic) {
+  constructor(movies) {
     super();
-    this._userStatistic = userStatistic;
+    this._movies = movies;
   }
 
   getTemplate() {
-    return createStatisticTemplate(this._userStatistic);
+    return createStatisticTemplate(this._movies);
   }
 }
