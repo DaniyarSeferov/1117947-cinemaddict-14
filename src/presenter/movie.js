@@ -25,6 +25,7 @@ export default class Movie {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleClick = this._handleClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleCommentDelete = this._handleCommentDelete.bind(this);
   }
 
   init(film, comments) {
@@ -43,6 +44,7 @@ export default class Movie {
     this._filmCardComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
     this._filmCardComponent.setWatchedClickHandler(this._handleClick('watched'));
     this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._popupComponent.setCommentDeleteHandler(this._handleCommentDelete);
 
     if (prevFilmCardComponent === null) {
       render(this._filmListContainer, this._filmCardComponent, RenderPosition.BEFOREEND);
@@ -79,6 +81,7 @@ export default class Movie {
     this._popupComponent.setWatchlistClickHandler(this._handleClick('watchlist'));
     this._popupComponent.setWatchedClickHandler(this._handleClick('watched'));
     this._popupComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._popupComponent.setCommentDeleteHandler(this._handleCommentDelete);
     this._mode = Mode.POPUP;
   }
 
@@ -148,6 +151,24 @@ export default class Movie {
         {
           comment: Object.assign({id: commentId, date: new Date()}, data.comment),
         },
+      ),
+    );
+  }
+
+  _handleCommentDelete(commentId) {
+    const movie = Object.assign(
+      this._film,
+      {
+        comments: this._film.comments.filter((comment) => comment !== commentId),
+      },
+    );
+
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {commentId: commentId},
+        {movie: movie},
       ),
     );
   }

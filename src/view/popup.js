@@ -109,6 +109,7 @@ export default class Popup extends Smart {
     this._emojiHandler = this._emojiHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
     this._scrollHandler = this._scrollHandler.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
 
     this.restoreHandlers();
   }
@@ -126,6 +127,7 @@ export default class Popup extends Smart {
       this.setWatchlistClickHandler(this._callback.watchlistClick);
       this.setWatchedClickHandler(this._callback.watchedClick);
       this.setFormSubmitHandler(this._callback.formSubmit);
+      this.setCommentDeleteHandler(this._callback.commentDelete);
     }
   }
 
@@ -234,6 +236,11 @@ export default class Popup extends Smart {
     }, true);
   }
 
+  _commentDeleteHandler(evt) {
+    evt.preventDefault();
+    this._callback.commentDelete(evt.target.dataset.id);
+  }
+
   _scrollHandler(evt) {
     evt.preventDefault();
     this.updateState({
@@ -268,6 +275,15 @@ export default class Popup extends Smart {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setCommentDeleteHandler(callback) {
+    this._callback.commentDelete = callback;
+    Array.from(this.getElement()
+      .querySelectorAll('.film-details__comment-delete'))
+      .forEach((buttonElement) => {
+        buttonElement.addEventListener('click', this._commentDeleteHandler);
+      });
   }
 
   static parseDataToState(data, state = null) {

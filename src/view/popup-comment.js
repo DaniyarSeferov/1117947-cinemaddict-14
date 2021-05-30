@@ -12,7 +12,7 @@ const createPopupCommentTemplate = (data) => {
     <p class="film-details__comment-info">
       <span class="film-details__comment-author">${data.author ? data.author : ''}</span>
       <span class="film-details__comment-day">${date}</span>
-      <button class="film-details__comment-delete">Delete</button>
+      <button class="film-details__comment-delete" data-id="${data.id}">Delete</button>
     </p>
   </div>`;
 };
