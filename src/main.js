@@ -3,7 +3,7 @@ import FooterStatisticsView from './view/footer-statistics';
 import StatisticView from './view/statistic';
 import {generateCommentIds, generateFilm} from './mock/film';
 import {generateComments} from './mock/comment';
-import {generateStatistic, generateUserStatistic} from './mock/statistic';
+import {generateStatistic} from './mock/statistic';
 import {remove, render, RenderPosition} from './utils/render';
 import {getUserRank} from './utils/film';
 import MovieListPresenter from './presenter/movie-list';
@@ -13,6 +13,7 @@ import FilterModel from './model/filter';
 import CommentsModel from './model/comments';
 import SiteMenuView from './view/site-menu';
 import {MenuItem} from './const';
+import {generateUserStatistic} from './utils/statistic';
 
 const FILMS_COUNT = 20;
 
