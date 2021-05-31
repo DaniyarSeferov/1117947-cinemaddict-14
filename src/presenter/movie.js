@@ -10,12 +10,13 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmListContainer, popupContainer, changeData, changeMode, api) {
+  constructor(filmListContainer, popupContainer, changeData, changeMode, api, commentsModel) {
     this._filmListContainer = filmListContainer;
     this._popupContainer = popupContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
     this._api = api;
+    this._commentsModel = commentsModel;
 
     this._filmCardComponent = null;
     this._popupComponent = null;
@@ -110,7 +111,10 @@ export default class Movie {
 
     this._api.getComments(this._film.film.id)
       .then((response) => {
-        console.log(response);
+        this._commentsModel.setComments(response);
+        this._popupComponent = new PopupView(this._film, response);
+        this._showPopup();
+        document.addEventListener('keydown', this._escKeyDownHandler);
       })
       .catch(() => {
         this._popupComponent = new PopupView(this._film, []);
