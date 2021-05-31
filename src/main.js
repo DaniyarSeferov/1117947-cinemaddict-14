@@ -35,7 +35,7 @@ const siteFooterElement = document.querySelector('.footer');
 const siteMenuComponent = new SiteMenuView();
 const footerStatisticsView = new FooterStatisticsView();
 const filterPresenter = new FilterPresenter(siteMenuComponent.getElement(), filterModel, moviesModel);
-const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel, filterModel, commentsModel);
+const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel, filterModel, commentsModel, api);
 
 filterPresenter.init();
 movieListPresenter.init();
