@@ -14,8 +14,11 @@ import CommentsModel from './model/comments';
 import SiteMenuView from './view/site-menu';
 import {MenuItem} from './const';
 import {generateUserStatistic} from './utils/statistic';
+import Api from './api';
 
 const FILMS_COUNT = 20;
+const AUTHORIZATION = 'Basic sfhhfwrio45jkjgve';
+const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
 const comments = generateComments();
 const movies = new Array(FILMS_COUNT).fill(null).map(() => ({
@@ -23,6 +26,12 @@ const movies = new Array(FILMS_COUNT).fill(null).map(() => ({
   comments: generateCommentIds(comments),
   statistic: generateStatistic(),
 }));
+
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getMovies().then((movies) => {
+  console.log('Server', movies[0]);
+});
 
 const userStatistic = generateUserStatistic(movies);
 const userRank = getUserRank(userStatistic.watched.count);

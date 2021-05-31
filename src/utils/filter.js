@@ -16,8 +16,8 @@ const checkDayDifference = (date, period) => {
 
 export const statisticFilter = {
   [StatisticFilterType.ALL]: (movies) => movies,
-  [StatisticFilterType.TODAY]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watching_date, 'day')),
-  [StatisticFilterType.WEEK]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watching_date, 'week')),
-  [StatisticFilterType.MONTH]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watching_date, 'month')),
-  [StatisticFilterType.YEAR]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watching_date, 'year')),
+  [StatisticFilterType.TODAY]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watchingDate, 'day')),
+  [StatisticFilterType.WEEK]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watchingDate, 'week')),
+  [StatisticFilterType.MONTH]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watchingDate, 'month')),
+  [StatisticFilterType.YEAR]: (movies) => movies.filter((movie) => movie.statistic.watched && checkDayDifference(movie.statistic.watchingDate, 'year')),
 };

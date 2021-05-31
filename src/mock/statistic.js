@@ -9,6 +9,6 @@ export const generateStatistic = () => {
     favorite: Boolean(getRandomInteger(0, 1)),
     watchlist: Boolean(getRandomInteger(0, 1)),
     watched: watched,
-    watching_date: watched ? generateRandomDate(WATCHING_DATE_YEAR_MIN, WATCHING_DATE_YEAR_MAX) : false,
+    watchingDate: watched ? generateRandomDate(WATCHING_DATE_YEAR_MIN, WATCHING_DATE_YEAR_MAX) : false,
   };
 };
