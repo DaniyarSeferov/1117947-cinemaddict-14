@@ -10,7 +10,7 @@ import Movies from './model/movies';
 import FilterModel from './model/filter';
 import CommentsModel from './model/comments';
 import SiteMenuView from './view/site-menu';
-import {MenuItem} from './const';
+import {MenuItem, UpdateType} from './const';
 import {generateUserStatistic} from './utils/statistic';
 import Api from './api';
 
@@ -33,7 +33,6 @@ const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 
 const siteMenuComponent = new SiteMenuView();
-
 const filterPresenter = new FilterPresenter(siteMenuComponent.getElement(), filterModel, moviesModel);
 const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel, filterModel, commentsModel);
 
@@ -60,15 +59,25 @@ const handleSiteMenuClick = (menuItem) => {
   previousMenuItem = menuItem;
 };
 
-siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+api.getMovies()
+  .then((movies) => {
+    moviesModel.setMovies(UpdateType.INIT, movies);
 
-api.getMovies().then((movies) => {
-  moviesModel.setMovies(movies);
+    const userStatistic = generateUserStatistic(movies);
+    const userRank = getUserRank(userStatistic.watched.count);
 
-  const userStatistic = generateUserStatistic(movies);
-  const userRank = getUserRank(userStatistic.watched.count);
+    render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
+    render(siteMainElement, siteMenuComponent, RenderPosition.AFTERBEGIN);
+    render(siteFooterElement, new FooterStatisticsView(movies.length), RenderPosition.BEFOREEND);
 
-  render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
-  render(siteMainElement, siteMenuComponent, RenderPosition.AFTERBEGIN);
-  render(siteFooterElement, new FooterStatisticsView(movies.length), RenderPosition.BEFOREEND);
-});
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  })
+  .catch(() => {
+    moviesModel.setMovies(UpdateType.INIT, []);
+
+    render(siteHeaderElement, new UserProfileView(), RenderPosition.BEFOREEND);
+    render(siteMainElement, siteMenuComponent, RenderPosition.AFTERBEGIN);
+    render(siteFooterElement, new FooterStatisticsView(0), RenderPosition.BEFOREEND);
+
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  });
