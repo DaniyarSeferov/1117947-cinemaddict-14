@@ -156,20 +156,14 @@ export default class Movie {
   }
 
   _handleFormSubmit(data) {
-    const commentId = nanoid();
-    data.movie.comments.push(commentId);
-
-    this._changeData(
-      UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        data,
-        {
-          comment: Object.assign({id: commentId, date: new Date()}, data.comment),
-        },
-      ),
-    );
+    this._api.addComment(data.comment, data.movie.film.id)
+      .then((response) => {
+        this._changeData(
+          UserAction.ADD_COMMENT,
+          UpdateType.PATCH,
+          response,
+        );
+      });
   }
 
   _handleCommentDelete(commentId) {

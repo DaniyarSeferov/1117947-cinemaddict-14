@@ -248,7 +248,7 @@ export default class MovieList {
           });
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update.comment);
+        this._commentsModel.setComments(update.comments);
         this._moviesModel.updateMovie(updateType, update.movie);
         break;
       case UserAction.DELETE_COMMENT:
