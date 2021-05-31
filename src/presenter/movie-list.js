@@ -116,7 +116,7 @@ export default class MovieList {
   }
 
   _renderFilm(film, container, presenter) {
-    const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange, this._api);
     const comments = this._getComments(film.comments);
     filmPresenter.init(film, comments);
     presenter[film.film.id] = filmPresenter;
