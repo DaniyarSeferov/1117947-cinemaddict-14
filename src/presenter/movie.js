@@ -2,7 +2,6 @@ import FilmCardView from '../view/film-card';
 import PopupView from '../view/popup';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import {UserAction, UpdateType} from '../const';
-import {nanoid} from 'nanoid';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
