@@ -1,7 +1,6 @@
 import UserProfileView from './view/user-profile';
 import FooterStatisticsView from './view/footer-statistics';
 import StatisticView from './view/statistic';
-import {generateComments} from './mock/comment';
 import {remove, render, RenderPosition, replace} from './utils/render';
 import {getUserRank} from './utils/film';
 import MovieListPresenter from './presenter/movie-list';
@@ -17,15 +16,11 @@ import Api from './api';
 const AUTHORIZATION = 'Basic sfhhfwrio45jkjgve';
 const END_POINT = 'https://14.ecmascript.pages.academy/cinemaddict';
 
-const comments = generateComments();
-
-
 const api = new Api(END_POINT, AUTHORIZATION);
 
 const moviesModel = new Movies();
 const filterModel = new FilterModel();
 const commentsModel = new CommentsModel();
-commentsModel.setComments(comments);
 
 const bodyElement = document.querySelector('body');
 const siteMainElement = document.querySelector('.main');
