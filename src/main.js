@@ -2,7 +2,7 @@ import UserProfileView from './view/user-profile';
 import FooterStatisticsView from './view/footer-statistics';
 import StatisticView from './view/statistic';
 import {generateComments} from './mock/comment';
-import {remove, render, RenderPosition} from './utils/render';
+import {remove, render, RenderPosition, replace} from './utils/render';
 import {getUserRank} from './utils/film';
 import MovieListPresenter from './presenter/movie-list';
 import FilterPresenter from './presenter/filter';
@@ -33,6 +33,7 @@ const siteHeaderElement = document.querySelector('.header');
 const siteFooterElement = document.querySelector('.footer');
 
 const siteMenuComponent = new SiteMenuView();
+const footerStatisticsView = new FooterStatisticsView();
 const filterPresenter = new FilterPresenter(siteMenuComponent.getElement(), filterModel, moviesModel);
 const movieListPresenter = new MovieListPresenter(siteMainElement, bodyElement, moviesModel, filterModel, commentsModel);
 
@@ -59,6 +60,9 @@ const handleSiteMenuClick = (menuItem) => {
   previousMenuItem = menuItem;
 };
 
+render(siteMainElement, siteMenuComponent, RenderPosition.AFTERBEGIN);
+render(siteFooterElement, footerStatisticsView, RenderPosition.BEFOREEND);
+
 api.getMovies()
   .then((movies) => {
     moviesModel.setMovies(UpdateType.INIT, movies);
@@ -68,7 +72,7 @@ api.getMovies()
 
     render(siteHeaderElement, new UserProfileView(userRank), RenderPosition.BEFOREEND);
     render(siteMainElement, siteMenuComponent, RenderPosition.AFTERBEGIN);
-    render(siteFooterElement, new FooterStatisticsView(movies.length), RenderPosition.BEFOREEND);
+    replace(new FooterStatisticsView(movies.length), footerStatisticsView);
 
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   })
