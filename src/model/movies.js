@@ -100,7 +100,7 @@ export default class Movies extends Observer {
           movie.statistic,
           {
             already_watched: movie.statistic.watched,
-            watching_date: movie.statistic.watchingDate instanceof Date ? movie.film.releaseDate.toISOString() : null,
+            watching_date: movie.statistic.watchingDate instanceof Date ? movie.statistic.watchingDate.toISOString() : null,
           },
         ),
       },
@@ -116,6 +116,7 @@ export default class Movies extends Observer {
     delete adaptedMovie.film_info.releaseDate;
     delete adaptedMovie.user_details.watched;
     delete adaptedMovie.user_details.watchingDate;
+    delete adaptedMovie.statistic;
 
     return adaptedMovie;
   }

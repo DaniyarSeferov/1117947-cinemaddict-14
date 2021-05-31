@@ -118,6 +118,10 @@ export default class Movie {
 
   _handleClick(changeKey) {
     return () => {
+      const watchingDate = changeKey === 'watched' ?
+        !this._film.statistic.watched ? new Date() : null :
+        this._film.statistic.watchingDate;
+
       this._changeData(
         UserAction.UPDATE_MOVIE,
         UpdateType.PATCH,
@@ -130,6 +134,7 @@ export default class Movie {
               this._film.statistic,
               {
                 [changeKey]: !this._film.statistic[changeKey],
+                'watchingDate': watchingDate,
               },
             ),
           },
