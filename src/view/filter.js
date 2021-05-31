@@ -1,15 +1,16 @@
 import Abstract from './abstract';
-import {MenuItem} from '../const';
+import {FilterType, MenuItem} from '../const';
 
 const createFilterItemTemplate = (filter, currentFilterType) => {
   const {type, name, count} = filter;
+  const showCount = type !== FilterType.ALL;
 
   return `<a href="#${type}"
       data-type="${type}"
       class="main-navigation__item ${type === currentFilterType ? 'main-navigation__item--active' : ''}"
       data-menu-type="${MenuItem.MOVIES}">
       ${name}
-      ${count ? `<span class="main-navigation__item-count">${count}</span>` : ''}
+      ${showCount  ? `<span class="main-navigation__item-count">${count ? count : 0}</span>` : ''}
     </a>`;
 };
 
