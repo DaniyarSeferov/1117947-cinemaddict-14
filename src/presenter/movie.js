@@ -167,20 +167,23 @@ export default class Movie {
   }
 
   _handleCommentDelete(commentId) {
-    const movie = Object.assign(
-      this._film,
-      {
-        comments: this._film.comments.filter((comment) => comment !== commentId),
-      },
-    );
+    this._api.deleteComment(commentId)
+      .then(() => {
+        const movie = Object.assign(
+          this._film,
+          {
+            comments: this._film.comments.filter((comment) => comment !== commentId),
+          },
+        );
 
-    this._changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      Object.assign(
-        {commentId: commentId},
-        {movie: movie},
-      ),
-    );
+        this._changeData(
+          UserAction.DELETE_COMMENT,
+          UpdateType.PATCH,
+          Object.assign(
+            {commentId: commentId},
+            {movie: movie},
+          ),
+        );
+      });
   }
 }

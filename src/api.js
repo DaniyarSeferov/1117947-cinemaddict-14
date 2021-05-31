@@ -60,9 +60,9 @@ export default class Api {
       });
   }
 
-  deleteMovie(movie) {
+  deleteComment(commentId) {
     return this._load({
-      url: `movies/${movie.film.id}`,
+      url: `comments/${commentId}`,
       method: Method.DELETE,
     });
   }
