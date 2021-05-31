@@ -60,7 +60,7 @@ export const countUserWatchedFilmsTopGenre = (films) => {
   });
 
   const genresSorted = Object.entries(genres).sort((genreFirst, genreSecond) => genreSecond[1] - genreFirst[1]);
-  return genresSorted[0][0];
+  return genresSorted.length ? genresSorted[0][0] : 0;
 };
 
 export const getTopRatedFilms = (films) => {

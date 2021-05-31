@@ -1,6 +1,6 @@
 import {generateRandomDate, getRandomInteger} from '../utils/common';
 
-const WATCHING_DATE_YEAR_MIN = 2000;
+const WATCHING_DATE_YEAR_MIN = 2020;
 const WATCHING_DATE_YEAR_MAX = 2021;
 
 export const generateStatistic = () => {
