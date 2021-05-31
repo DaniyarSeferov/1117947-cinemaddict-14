@@ -3,11 +3,10 @@ import PopupCommentAdd from './popup-comment-add';
 import PopupComment from './popup-comment';
 import Abstract from './abstract';
 
-const createPopupCommentsTemplate = (data) => {
-  const {comments} = data;
+const createPopupCommentsTemplate = (comments, state) => {
   const commentsElement = comments.map((comment) => new PopupComment(comment).getTemplate());
   const commentsList = new PopupCommentsList(commentsElement).getTemplate();
-  const addComment = new PopupCommentAdd(data).getTemplate();
+  const addComment = new PopupCommentAdd(state).getTemplate();
 
   return `<section class="film-details__comments-wrap">
     <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
@@ -19,12 +18,13 @@ const createPopupCommentsTemplate = (data) => {
 };
 
 export default class PopupComments extends Abstract {
-  constructor(data) {
+  constructor(comments, state) {
     super();
-    this._data = data;
+    this._comments = comments;
+    this._state = state;
   }
 
   getTemplate() {
-    return createPopupCommentsTemplate(this._data);
+    return createPopupCommentsTemplate(this._comments, this._state);
   }
 }

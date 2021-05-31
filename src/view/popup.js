@@ -2,9 +2,9 @@ import PopupComments from './popup-comments';
 import {humanizeFilmReleaseDate, humanizeFilmRuntime} from '../utils/film';
 import Smart from './smart';
 
-const createPopupTemplate = (data) => {
-  const {film, statistic} = data;
-  const commentsElement = new PopupComments(data).getTemplate();
+const createPopupTemplate = (data, comments) => {
+  const {film, statistic, state} = data;
+  const commentsElement = new PopupComments(comments, state).getTemplate();
   const releaseDate = humanizeFilmReleaseDate(film.releaseDate);
   const runtime = humanizeFilmRuntime(film.runtime);
   const genresTitle = film.genres.length === 1 ? 'Genre' : 'Genres';
@@ -97,9 +97,10 @@ const createPopupTemplate = (data) => {
 };
 
 export default class Popup extends Smart {
-  constructor(data, state = null) {
+  constructor(data, comments, state = null) {
     super();
     this._data = Popup.parseDataToState(data, state);
+    this._comments = comments;
     this._closePopupClickHandler = this._closePopupClickHandler.bind(this);
     this._favoriteClickHandler = this._favoriteClickHandler.bind(this);
     this._watchlistClickHandler = this._watchlistClickHandler.bind(this);
@@ -108,6 +109,7 @@ export default class Popup extends Smart {
     this._emojiHandler = this._emojiHandler.bind(this);
     this._commentInputHandler = this._commentInputHandler.bind(this);
     this._scrollHandler = this._scrollHandler.bind(this);
+    this._commentDeleteHandler = this._commentDeleteHandler.bind(this);
 
     this.restoreHandlers();
   }
@@ -118,11 +120,15 @@ export default class Popup extends Smart {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setClosePopupClickHandler(this._callback.closePopupClick);
-    this.setFavoriteClickHandler(this._callback.favoriteClick);
-    this.setWatchlistClickHandler(this._callback.watchlistClick);
-    this.setWatchedClickHandler(this._callback.watchedClick);
-    this.setFormSubmitHandler(this._callback.formSubmit);
+
+    if (Object.keys(this._callback).length) {
+      this.setClosePopupClickHandler(this._callback.closePopupClick);
+      this.setFavoriteClickHandler(this._callback.favoriteClick);
+      this.setWatchlistClickHandler(this._callback.watchlistClick);
+      this.setWatchedClickHandler(this._callback.watchedClick);
+      this.setFormSubmitHandler(this._callback.formSubmit);
+      this.setCommentDeleteHandler(this._callback.commentDelete);
+    }
   }
 
   _setInnerHandlers() {
@@ -140,7 +146,7 @@ export default class Popup extends Smart {
   }
 
   getTemplate() {
-    return createPopupTemplate(this._data);
+    return createPopupTemplate(this._data, this._comments);
   }
 
   getState() {
@@ -190,24 +196,28 @@ export default class Popup extends Smart {
     this._callback.watchedClick();
   }
 
-  _addComment(emotion, text) {
+  _createComment(emotion, text) {
+    let comment = null;
     if (emotion && text.length) {
-      this._data.comments.push({
+      comment = {
         emotion,
         text,
-        date: new Date(),
-      });
+      };
     }
+    return comment;
   }
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._addComment(this._data.state.emoji, this._data.state.commentDescription);
+    const comment = this._createComment(this._data.state.emoji, this._data.state.commentDescription);
     this.updateState({
       emoji: null,
       commentDescription: '',
     });
-    this._callback.formSubmit(Popup.parseStateToData(this._data));
+
+    if (comment) {
+      this._callback.formSubmit({comment, movie: Popup.parseStateToData(this._data)});
+    }
   }
 
   _emojiHandler(evt) {
@@ -224,6 +234,11 @@ export default class Popup extends Smart {
     this.updateState({
       commentDescription: evt.target.value,
     }, true);
+  }
+
+  _commentDeleteHandler(evt) {
+    evt.preventDefault();
+    this._callback.commentDelete(evt.target.dataset.id);
   }
 
   _scrollHandler(evt) {
@@ -260,6 +275,15 @@ export default class Popup extends Smart {
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  setCommentDeleteHandler(callback) {
+    this._callback.commentDelete = callback;
+    Array.from(this.getElement()
+      .querySelectorAll('.film-details__comment-delete'))
+      .forEach((buttonElement) => {
+        buttonElement.addEventListener('click', this._commentDeleteHandler);
+      });
   }
 
   static parseDataToState(data, state = null) {

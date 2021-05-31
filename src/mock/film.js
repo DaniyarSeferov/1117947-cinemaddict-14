@@ -15,6 +15,8 @@ const FILM_ACTORS_MIN = 3;
 const FILM_ACTORS_MAX = 7;
 const FILM_RUNTIME_MINUTES_MIN = 16;
 const FILM_RUNTIME_MINUTES_MAX = 80;
+const FILM_COMMENTS_MIN_COUNT = 0;
+const FILM_COMMENTS_MAX_COUNT = 5;
 
 const generateTitle = () => {
   const titles = [
@@ -198,6 +200,11 @@ const generateAge = () => {
   ];
 
   return getRandomArrayItem(ages);
+};
+
+export const generateCommentIds = (comments) => {
+  return getRandomArrayItems(comments, FILM_COMMENTS_MIN_COUNT, FILM_COMMENTS_MAX_COUNT)
+    .map((comment) => comment.id);
 };
 
 export const generateFilm = () => {
