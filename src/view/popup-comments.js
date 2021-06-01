@@ -4,7 +4,7 @@ import PopupComment from './popup-comment';
 import Abstract from './abstract';
 
 const createPopupCommentsTemplate = (comments, state) => {
-  const commentsElement = comments.map((comment) => new PopupComment(comment).getTemplate());
+  const commentsElement = comments.map((comment) => new PopupComment(comment, state).getTemplate());
   const commentsList = new PopupCommentsList(commentsElement).getTemplate();
   const addComment = new PopupCommentAdd(state).getTemplate();
 

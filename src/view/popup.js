@@ -23,7 +23,7 @@ const createPopupTemplate = (data, comments) => {
         <div class="film-details__poster">
           <img class="film-details__poster-img" src="${film.poster}" alt="">
 
-          <p class="film-details__age">${film.age}</p>
+          <p class="film-details__age">${film.age}+</p>
         </div>
 
         <div class="film-details__info">
@@ -210,10 +210,6 @@ export default class Popup extends Smart {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     const comment = this._createComment(this._data.state.emoji, this._data.state.commentDescription);
-    this.updateState({
-      emoji: null,
-      commentDescription: '',
-    });
 
     if (comment) {
       this._callback.formSubmit({comment, movie: Popup.parseStateToData(this._data)});
@@ -286,6 +282,38 @@ export default class Popup extends Smart {
       });
   }
 
+  setSaving() {
+    this.updateState({
+      isDisabled: true,
+    });
+  }
+
+  setSaved() {
+    this.updateState({
+      emoji: null,
+      commentDescription: '',
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.updateState({
+        isDisabled: false,
+        isDeleting: false,
+        deletingCommentId: null,
+      });
+    };
+
+    this.shake(resetFormState);
+  }
+
+  setDeleting(commentId) {
+    this.updateState({
+      isDeleting: true,
+      deletingCommentId: commentId,
+    });
+  }
+
   static parseDataToState(data, state = null) {
     const defaultState = {
       distanceToTop: 0,
@@ -302,6 +330,11 @@ export default class Popup extends Smart {
         state: Object.assign(
           {},
           currentState,
+          {
+            isDisabled: false,
+            isDeleting: false,
+            deletingCommentId: null,
+          },
         ),
       },
     );

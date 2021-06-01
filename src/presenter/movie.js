@@ -2,7 +2,6 @@ import FilmCardView from '../view/film-card';
 import PopupView from '../view/popup';
 import {remove, render, RenderPosition, replace} from '../utils/render';
 import {UserAction, UpdateType} from '../const';
-import {nanoid} from 'nanoid';
 
 const Mode = {
   DEFAULT: 'DEFAULT',
@@ -10,11 +9,13 @@ const Mode = {
 };
 
 export default class Movie {
-  constructor(filmListContainer, popupContainer, changeData, changeMode) {
+  constructor(filmListContainer, popupContainer, changeData, changeMode, api, commentsModel) {
     this._filmListContainer = filmListContainer;
     this._popupContainer = popupContainer;
     this._changeData = changeData;
     this._changeMode = changeMode;
+    this._api = api;
+    this._commentsModel = commentsModel;
 
     this._filmCardComponent = null;
     this._popupComponent = null;
@@ -106,9 +107,19 @@ export default class Movie {
 
   _handleOpenPopupClick() {
     this._changeMode();
-    this._popupComponent = new PopupView(this._film, this._comments);
-    this._showPopup();
-    document.addEventListener('keydown', this._escKeyDownHandler);
+
+    this._api.getComments(this._film.film.id)
+      .then((response) => {
+        this._commentsModel.setComments(response);
+        this._popupComponent = new PopupView(this._film, response);
+        this._showPopup();
+        document.addEventListener('keydown', this._escKeyDownHandler);
+      })
+      .catch(() => {
+        this._popupComponent = new PopupView(this._film, []);
+        this._showPopup();
+        document.addEventListener('keydown', this._escKeyDownHandler);
+      });
   }
 
   _handleClosePopupClick() {
@@ -118,6 +129,10 @@ export default class Movie {
 
   _handleClick(changeKey) {
     return () => {
+      const watchingDate = changeKey === 'watched' ?
+        !this._film.statistic.watched ? new Date() : null :
+        this._film.statistic.watchingDate;
+
       this._changeData(
         UserAction.UPDATE_MOVIE,
         UpdateType.PATCH,
@@ -130,6 +145,7 @@ export default class Movie {
               this._film.statistic,
               {
                 [changeKey]: !this._film.statistic[changeKey],
+                'watchingDate': watchingDate,
               },
             ),
           },
@@ -139,37 +155,43 @@ export default class Movie {
   }
 
   _handleFormSubmit(data) {
-    const commentId = nanoid();
-    data.movie.comments.push(commentId);
-
-    this._changeData(
-      UserAction.ADD_COMMENT,
-      UpdateType.PATCH,
-      Object.assign(
-        {},
-        data,
-        {
-          comment: Object.assign({id: commentId, date: new Date()}, data.comment),
-        },
-      ),
-    );
+    this._popupComponent.setSaving();
+    this._api.addComment(data.comment, data.movie.film.id)
+      .then((response) => {
+        this._popupComponent.setSaved();
+        this._changeData(
+          UserAction.ADD_COMMENT,
+          UpdateType.PATCH,
+          response,
+        );
+      })
+      .catch(() => {
+        this._popupComponent.setAborting();
+      });
   }
 
   _handleCommentDelete(commentId) {
-    const movie = Object.assign(
-      this._film,
-      {
-        comments: this._film.comments.filter((comment) => comment !== commentId),
-      },
-    );
+    this._popupComponent.setDeleting(commentId);
+    this._api.deleteComment(commentId)
+      .then(() => {
+        const movie = Object.assign(
+          this._film,
+          {
+            comments: this._film.comments.filter((comment) => comment !== commentId),
+          },
+        );
 
-    this._changeData(
-      UserAction.DELETE_COMMENT,
-      UpdateType.PATCH,
-      Object.assign(
-        {commentId: commentId},
-        {movie: movie},
-      ),
-    );
+        this._changeData(
+          UserAction.DELETE_COMMENT,
+          UpdateType.PATCH,
+          Object.assign(
+            {commentId: commentId},
+            {movie: movie},
+          ),
+        );
+      })
+      .catch(() => {
+        this._popupComponent.setAborting();
+      });
   }
 }

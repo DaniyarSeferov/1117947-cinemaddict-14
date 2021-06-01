@@ -12,12 +12,14 @@ import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} f
 import {filter} from '../utils/filter';
 
 export default class MovieList {
-  constructor(boardContainer, popupContainer, moviesModel, filterModel, commentsModel) {
+  constructor(boardContainer, popupContainer, moviesModel, filterModel, commentsModel, api) {
     this._boardContainer = boardContainer;
     this._popupContainer = popupContainer;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
     this._commentsModel = commentsModel;
+    this._isLoading = true;
+    this._api = api;
 
     this._Presenter = {
       main: {},
@@ -114,7 +116,7 @@ export default class MovieList {
   }
 
   _renderFilm(film, container, presenter) {
-    const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange);
+    const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange, this._api, this._commentsModel);
     const comments = this._getComments(film.comments);
     filmPresenter.init(film, comments);
     presenter[film.film.id] = filmPresenter;
@@ -183,6 +185,12 @@ export default class MovieList {
   }
 
   _renderMovieList() {
+    if (this._isLoading) {
+      this._renderFilmsMainContainer();
+      this._renderLoading();
+      return;
+    }
+
     if (!this._getMovies().length) {
       this._renderFilmsMainContainer();
       this._renderNoFilms();
@@ -218,6 +226,7 @@ export default class MovieList {
     remove(this._sortMenuComponent);
     remove(this._filmsListEmptyComponent);
     remove(this._showMoreButtonComponent);
+    remove(this._filmsListLoadingComponent);
 
     if (resetRenderedMovieCount) {
       this._renderedMoviesCount = FILMS_CARD_COUNT;
@@ -233,10 +242,13 @@ export default class MovieList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
-        this._moviesModel.updateMovie(updateType, update);
+        this._api.updateMovie(update)
+          .then((response) => {
+            this._moviesModel.updateMovie(updateType, response);
+          });
         break;
       case UserAction.ADD_COMMENT:
-        this._commentsModel.addComment(updateType, update.comment);
+        this._commentsModel.setComments(update.comments);
         this._moviesModel.updateMovie(updateType, update.movie);
         break;
       case UserAction.DELETE_COMMENT:
@@ -262,6 +274,11 @@ export default class MovieList {
         break;
       case UpdateType.MAJOR:
         this._clearMovieList({resetRenderedMovieCount: true, resetSortType: true});
+        this._renderMovieList();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._filmsListLoadingComponent);
         this._renderMovieList();
         break;
     }
