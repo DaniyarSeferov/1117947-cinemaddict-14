@@ -49,7 +49,7 @@ export const StatisticFilterType = {
   YEAR: 'year',
 };
 
-export const movieMode = {
+export const MovieMode = {
   DEFAULT: 'DEFAULT',
   POPUP: 'POPUP',
 };

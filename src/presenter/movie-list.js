@@ -5,7 +5,7 @@ import FilmsListEmptyView from '../view/films-list-empty';
 import FilmsListLoadingView from '../view/films-list-loading';
 import ShowMoreButtonView from '../view/show-more-button';
 import {remove, render, RenderPosition, replace} from '../utils/render';
-import {FILMS_CARD_COUNT, movieMode, SortType, UpdateType, UserAction} from '../const';
+import {FILMS_CARD_COUNT, MovieMode, SortType, UpdateType, UserAction} from '../const';
 import Movie from './movie';
 import FilmsListExtraView from '../view/films-list-extra';
 import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} from '../utils/film';
@@ -148,7 +148,7 @@ export default class MovieList {
   }
 
   _renderFilm(film, container, presenter) {
-    const filmMode = presenter[film.film.id] ? presenter[film.film.id].getMode() : movieMode.DEFAULT;
+    const filmMode = presenter[film.film.id] ? presenter[film.film.id].getMode() : MovieMode.DEFAULT;
     const filmPresenter = new Movie(container, this._popupContainer, this._handleViewAction, this._handleModeChange, this._api, this._commentsModel, this._filterModel);
     const comments = this._getComments(film.comments);
     filmPresenter.init(film, comments, filmMode);
