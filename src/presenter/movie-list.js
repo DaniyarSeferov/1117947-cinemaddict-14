@@ -12,12 +12,13 @@ import {getMostCommentedFilms, getTopRatedFilms, sortFilmDate, sortFilmRating} f
 import {filter} from '../utils/filter';
 
 export default class MovieList {
-  constructor(boardContainer, popupContainer, moviesModel, filterModel, commentsModel, api) {
+  constructor(boardContainer, popupContainer, moviesModel, filterModel, commentsModel, api, userModel) {
     this._boardContainer = boardContainer;
     this._popupContainer = popupContainer;
     this._moviesModel = moviesModel;
     this._filterModel = filterModel;
     this._commentsModel = commentsModel;
+    this._userModel = userModel;
     this._isLoading = true;
     this._api = api;
 
@@ -242,9 +243,16 @@ export default class MovieList {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_MOVIE:
+      case UserAction.UPDATE_MOVIE_WATCHED:
         this._api.updateMovie(update)
           .then((response) => {
             this._moviesModel.updateMovie(updateType, response);
+
+            if (actionType === UserAction.UPDATE_MOVIE_WATCHED) {
+              let userWatched = this._userModel.getWatched();
+              response.statistic.watched ? userWatched++ : userWatched--;
+              this._userModel.setWatched(updateType, userWatched);
+            }
           });
         break;
       case UserAction.ADD_COMMENT:

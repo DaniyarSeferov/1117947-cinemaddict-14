@@ -132,9 +132,10 @@ export default class Movie {
       const watchingDate = changeKey === 'watched' ?
         !this._film.statistic.watched ? new Date() : null :
         this._film.statistic.watchingDate;
+      const action = changeKey === 'watched' ? UserAction.UPDATE_MOVIE_WATCHED : UserAction.UPDATE_MOVIE;
 
       this._changeData(
-        UserAction.UPDATE_MOVIE,
+        action,
         UpdateType.PATCH,
         Object.assign(
           {},
