@@ -171,6 +171,7 @@ export default class Movie {
   }
 
   _handleCommentDelete(commentId) {
+    this._popupComponent.setDeleting(commentId);
     this._api.deleteComment(commentId)
       .then(() => {
         const movie = Object.assign(
@@ -188,6 +189,9 @@ export default class Movie {
             {movie: movie},
           ),
         );
+      })
+      .catch(() => {
+        this._popupComponent.setAborting();
       });
   }
 }

@@ -300,10 +300,18 @@ export default class Popup extends Smart {
       this.updateState({
         isDisabled: false,
         isDeleting: false,
+        deletingCommentId: null,
       });
     };
 
     this.shake(resetFormState);
+  }
+
+  setDeleting(commentId) {
+    this.updateState({
+      isDeleting: true,
+      deletingCommentId: commentId,
+    });
   }
 
   static parseDataToState(data, state = null) {
@@ -325,6 +333,7 @@ export default class Popup extends Smart {
           {
             isDisabled: false,
             isDeleting: false,
+            deletingCommentId: null,
           },
         ),
       },
