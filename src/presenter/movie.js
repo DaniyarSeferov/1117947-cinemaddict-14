@@ -150,7 +150,7 @@ export default class Movie {
     const isWatched = changeKey === 'watched' && filter === FilterType.HISTORY;
     const isFavorite = changeKey === 'favorite' && filter === FilterType.FAVORITES;
 
-    return isWatchlist || isWatched || isFavorite ? UpdateType.MINOR : UpdateType.PATCH;
+    return (this._mode !== movieMode.POPUP && (isWatchlist || isWatched || isFavorite)) ? UpdateType.MINOR : UpdateType.PATCH;
   }
 
   _handleClick(changeKey) {
