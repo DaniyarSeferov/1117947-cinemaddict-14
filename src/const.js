@@ -48,3 +48,8 @@ export const StatisticFilterType = {
   MONTH: 'month',
   YEAR: 'year',
 };
+
+export const movieMode = {
+  DEFAULT: 'DEFAULT',
+  POPUP: 'POPUP',
+};

@@ -258,9 +258,17 @@ export default class Popup extends Smart {
     this.getElement().querySelector('#favorite').addEventListener('click', this._favoriteClickHandler);
   }
 
+  removeFavoriteClickHandler() {
+    this.getElement().querySelector('#favorite').removeEventListener('click', this._favoriteClickHandler);
+  }
+
   setWatchlistClickHandler(callback) {
     this._callback.watchlistClick = callback;
     this.getElement().querySelector('#watchlist').addEventListener('click', this._watchlistClickHandler);
+  }
+
+  removeWatchlistClickHandler() {
+    this.getElement().querySelector('#watchlist').removeEventListener('click', this._watchlistClickHandler);
   }
 
   setWatchedClickHandler(callback) {
@@ -268,9 +276,17 @@ export default class Popup extends Smart {
     this.getElement().querySelector('#watched').addEventListener('click', this._watchedClickHandler);
   }
 
+  removeWatchedClickHandler() {
+    this.getElement().querySelector('#watched').removeEventListener('click', this._watchedClickHandler);
+  }
+
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._formSubmitHandler);
+  }
+
+  removeFormSubmitHandler() {
+    this.getElement().querySelector('form').removeEventListener('submit', this._formSubmitHandler);
   }
 
   setCommentDeleteHandler(callback) {
@@ -279,6 +295,14 @@ export default class Popup extends Smart {
       .querySelectorAll('.film-details__comment-delete'))
       .forEach((buttonElement) => {
         buttonElement.addEventListener('click', this._commentDeleteHandler);
+      });
+  }
+
+  removeCommentDeleteHandler() {
+    Array.from(this.getElement()
+      .querySelectorAll('.film-details__comment-delete'))
+      .forEach((buttonElement) => {
+        buttonElement.removeEventListener('click', this._commentDeleteHandler);
       });
   }
 
