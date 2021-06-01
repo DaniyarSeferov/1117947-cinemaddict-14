@@ -2,14 +2,14 @@ import he from 'he';
 import Abstract from './abstract';
 
 const createPopupCommentAddTemplate = (data) => {
-  const {emoji, commentDescription} = data;
+  const {emoji, commentDescription, isDisabled} = data;
   const emojiImage = emoji ? `<img src="images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">` : '';
 
   return `<div class="film-details__new-comment">
     <div class="film-details__add-emoji-label">${emojiImage}</div>
 
     <label class="film-details__comment-label">
-      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${emoji ? '' : 'disabled'}>${he.encode(commentDescription)}</textarea>
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${emoji && !isDisabled ? '' : 'disabled'}>${he.encode(commentDescription)}</textarea>
     </label>
 
     <div class="film-details__emoji-list">

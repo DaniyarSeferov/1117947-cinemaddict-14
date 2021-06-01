@@ -155,13 +155,18 @@ export default class Movie {
   }
 
   _handleFormSubmit(data) {
+    this._popupComponent.setSaving();
     this._api.addComment(data.comment, data.movie.film.id)
       .then((response) => {
+        this._popupComponent.setSaved();
         this._changeData(
           UserAction.ADD_COMMENT,
           UpdateType.PATCH,
           response,
         );
+      })
+      .catch(() => {
+        this._popupComponent.setAborting();
       });
   }
 

@@ -210,10 +210,6 @@ export default class Popup extends Smart {
   _formSubmitHandler(evt) {
     evt.preventDefault();
     const comment = this._createComment(this._data.state.emoji, this._data.state.commentDescription);
-    this.updateState({
-      emoji: null,
-      commentDescription: '',
-    });
 
     if (comment) {
       this._callback.formSubmit({comment, movie: Popup.parseStateToData(this._data)});
@@ -286,6 +282,30 @@ export default class Popup extends Smart {
       });
   }
 
+  setSaving() {
+    this.updateState({
+      isDisabled: true,
+    });
+  }
+
+  setSaved() {
+    this.updateState({
+      emoji: null,
+      commentDescription: '',
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this.updateState({
+        isDisabled: false,
+        isDeleting: false,
+      });
+    };
+
+    this.shake(resetFormState);
+  }
+
   static parseDataToState(data, state = null) {
     const defaultState = {
       distanceToTop: 0,
@@ -302,6 +322,10 @@ export default class Popup extends Smart {
         state: Object.assign(
           {},
           currentState,
+          {
+            isDisabled: false,
+            isDeleting: false,
+          },
         ),
       },
     );
