@@ -13,7 +13,7 @@ export default class Movies extends Observer {
   }
 
   getMovies() {
-    return this._movies;
+    return this._movies.slice();
   }
 
   updateMovie(updateType, update) {
