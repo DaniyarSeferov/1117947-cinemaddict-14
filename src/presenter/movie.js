@@ -113,6 +113,7 @@ export default class Movie {
 
     this._popupContainer.classList.remove('hide-overflow');
     this._mode = MovieMode.DEFAULT;
+    this._popupComponent = null;
   }
 
   _escKeyDownHandler(evt) {
